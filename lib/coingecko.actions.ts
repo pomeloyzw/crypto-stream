@@ -12,7 +12,7 @@ if (!API_KEY) {
   throw new Error("COINGECKO_API_KEY is not defined");
 }
 
-export async function coingeckoFetch<T = any>(
+export async function coingeckoFetcher<T>(
   endpoint: string,
   params?: QueryParams,
   revalidate = 60
@@ -29,7 +29,7 @@ export async function coingeckoFetch<T = any>(
     } as Record<string, string>,
     next: { revalidate }
   });
-
+  console.debug(res)
   if (!res.ok) {
     const errorBody: CoinGeckoErrorBody = await res.json().catch(() => ({}));
     throw new Error(`Error fetching data from CoinGecko: ${res.status} ${errorBody.error || res.statusText}`);

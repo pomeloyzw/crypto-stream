@@ -1,129 +1,20 @@
-import DataTable from "@/components/DataTable"
-import { coingeckoFetch } from "@/lib/coingecko.actions";
-import { cn, formatCurrency } from "@/lib/utils";
-import { TrendingDown, TrendingUp } from "lucide-react";
-import Image from "next/image"
-import Link from "next/link";
+import CoinOverview from "@/components/home/CoinOverview"
+import TrendingCoins from "@/components/home/TrendingCoins"
+import { Suspense } from "react"
+import { CoinOverviewFallback, TrendingCoinsFallback } from "@/components/home/fallback"
 
-const columns: DataTableColumn<TrendingCoin>[] = [
-  {
-    header: "Name",
-    cellClassName: "name-celll",
-    cell: (coin) => {
-      const item = coin.item;
-
-      return (
-        <Link href={`/coins/${item.id}`}>
-          <Image src={item.large} alt={item.name} width={36} height={36} />
-          <p>{item.name}</p>
-        </Link>
-      )
-    }
-  },
-  {
-    header: "24h Change",
-    cellClassName: "name-celll",
-    cell: (coin) => {
-      const item = coin.item;
-      const isTrendingUp = item.data.price_change_percentage_24h.usd > 0;
-
-      return (
-        <div className={cn("price-change", isTrendingUp ? "text-green-500" : "text-red-500")}>
-          <p>
-            {isTrendingUp ? (
-              <TrendingUp width={16} height={16} />
-            ) :
-              <TrendingDown width={16} height={16} />
-            }
-            {Math.abs(item.data.price_change_percentage_24h.usd).toFixed(2)}%
-          </p>
-        </div>
-      )
-    }
-  },
-  {
-    header: "Price",
-    cellClassName: "price-celll",
-    cell: (coin) => coin.item.data.price
-  }
-]
-
-// Dummy local dataset matching TrendingCoin type in type.d.ts.
-// Uses local images from the public folder so Next/Image can resolve them.
-// Adjust the image paths below if your project's public assets live elsewhere.
-const trendingData: TrendingCoin[] = [
-  {
-    item: {
-      id: "bitcoin",
-      name: "Bitcoin",
-      symbol: "btc",
-      market_cap_rank: 1,
-      thumb: "/logo.svg",
-      large: "/logo.svg",
-      data: {
-        price: 89113.0,
-        price_change_percentage_24h: { usd: -0.72 }
-      }
-    }
-  },
-  {
-    item: {
-      id: "ethereum",
-      name: "Ethereum",
-      symbol: "eth",
-      market_cap_rank: 2,
-      thumb: "/logo.svg",
-      large: "/logo.svg",
-      data: {
-        price: 3450.5,
-        price_change_percentage_24h: { usd: 2.14 }
-      }
-    }
-  },
-  {
-    item: {
-      id: "tether",
-      name: "Tether",
-      symbol: "usdt",
-      market_cap_rank: 3,
-      thumb: "/logo.svg",
-      large: "/logo.svg",
-      data: {
-        price: 1.0,
-        price_change_percentage_24h: { usd: 0.01 }
-      }
-    }
-  }
-]
 
 const page = async () => {
-  const coin = await coingeckoFetch<CoinDetailsData>("/coins/bitcoin", {
-    dex_pair_format: "symbol"
-  });
-
+  
   return (
     <main className="main-container">
       <section className="home-grid">
-        <div id="coin-overview">
-          <div className="header pt-2">
-            <Image src={coin.image.large}
-              alt={coin.name}
-              width={56}
-              height={56}
-            />
-            <div className="info">
-              <p>{coin.name} / {coin.symbol.toUpperCase()}</p>
-              <h1>{formatCurrency(coin.market_data.current_price.usd)}</h1>
-            </div>
-          </div>
-        </div>
-        <p>Trending Coins</p>
-        <DataTable 
-          columns={columns} 
-          data={trendingData} 
-          rowKey={(coin) => coin.item.id} 
-          tableClassName="trending-coins-table" 
-        />
+        <Suspense fallback={<CoinOverviewFallback />}>
+          <CoinOverview />
+        </Suspense>
+        <Suspense fallback={<TrendingCoinsFallback />}>
+          <TrendingCoins />
+        </Suspense>
       </section>
 
       <section className="w-full mt-7 space-y-4">
