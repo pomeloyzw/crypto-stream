@@ -22,13 +22,21 @@ export async function coingeckoFetcher<T>(
     query: params,
   }, { skipEmptyString: true, skipNull: true });
 
-  const res = await fetch(url, {
-    headers: {
-      "Accept": "application/json", 
-      "x-cg-pro-api-key": API_KEY
-    } as Record<string, string>,
-    next: { revalidate }
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: {
+        "Accept": "application/json",
+        "x-cg-pro-api-key": API_KEY,
+      } as Record<string, string>,
+      next: { revalidate },
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
   console.debug(res)
   if (!res.ok) {
     const errorBody: CoinGeckoErrorBody = await res.json().catch(() => ({}));
