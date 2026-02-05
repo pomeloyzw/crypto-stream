@@ -3,7 +3,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link";
-import DataTable from "../DataTable";
+import { DataTable } from "../DataTable";
 
 const TrendingCoins = async () => {
   const trendingCoins = await coingeckoFetcher<{ coins: TrendingCoin[] }>("/search/trending", undefined, 300);
