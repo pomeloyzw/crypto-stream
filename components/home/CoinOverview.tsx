@@ -8,17 +8,25 @@ const CoinOverview = async () => {
   let coin: CoinDetailsData | undefined
   let coinOHLC: OHLCData[] | undefined
 
-  try {
-    [coin, coinOHLC] = await Promise.all([
-      coingeckoFetcher<CoinDetailsData>("/coins/bitcoin"),
-      coingeckoFetcher<OHLCData[]>("/coins/bitcoin/ohlc", {
-        vs_currency: "usd",
-        days: 1,
-      }),
-    ])
-  } catch (error) {
-    console.error("Error fetching coin data:", error)
+  const [coinResult, ohlcResult] = await Promise.allSettled([
+    coingeckoFetcher<CoinDetailsData>("/coins/bitcoin"),
+    coingeckoFetcher<OHLCData[]>("/coins/bitcoin/ohlc", {
+      vs_currency: "usd",
+      days: 1,
+    }),
+  ])
+
+  if (coinResult.status === "rejected") {
+    console.error("Error fetching coin details:", coinResult.reason)
     return <CoinOverviewFallback />
+  }
+
+  coin = coinResult.value
+  if (ohlcResult.status === "fulfilled") {
+    coinOHLC = ohlcResult.value
+  } else {
+    console.error("Error fetching OHLC data:", ohlcResult.reason)
+    coinOHLC = []
   }
 
   if (!coin) return <CoinOverviewFallback />
