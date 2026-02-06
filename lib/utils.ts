@@ -51,7 +51,8 @@ export function trendingClasses(value: number) {
 export function timeAgo(date: string | number | Date): string {
   const now = new Date();
   const past = new Date(date);
-  const diff = now.getTime() - past.getTime(); // difference in ms
+  if (Number.isNaN(past.getTime())) return 'invalid date';
+  const diff = Math.max(0, now.getTime() - past.getTime()); // difference in ms
 
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);
