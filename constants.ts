@@ -1,9 +1,9 @@
-import {
+import type {
   CandlestickSeriesPartialOptions,
   ChartOptions,
-  ColorType,
   DeepPartial,
 } from 'lightweight-charts';
+import { ColorType } from 'lightweight-charts';
 
 export const navItems = [
   {
