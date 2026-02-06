@@ -39,8 +39,16 @@ export async function coingeckoFetcher<T>(
   }
   console.debug(res)
   if (!res.ok) {
-    const errorBody: CoinGeckoErrorBody = await res.json().catch(() => ({}));
-    throw new Error(`Error fetching data from CoinGecko: ${res.status} ${errorBody.error || res.statusText}`);
+    // Try to parse JSON error body, otherwise fall back to text for clearer errors
+    const parsed = await res.text().catch(() => "");
+    let errorMessage = res.statusText;
+    try {
+      const json = JSON.parse(parsed || "{}");
+      errorMessage = json.error || json.message || errorMessage;
+    } catch {
+      if (parsed) errorMessage = parsed;
+    }
+    throw new Error(`Error fetching data from CoinGecko: ${res.status} ${errorMessage}`);
   }
 
   return res.json();
