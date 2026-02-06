@@ -4,7 +4,7 @@ import { getCandlestickConfig, getChartConfig, PERIOD_BUTTONS, PERIOD_CONFIG } f
 import { coingeckoFetcher } from "@/lib/coingecko.actions";
 import { convertOHLCData } from "@/lib/utils";
 import { CandlestickSeries, createChart, IChartApi, ISeriesApi } from "lightweight-charts";
-import { use, useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 const CandlestickChart = ({
   children,
@@ -19,7 +19,6 @@ const CandlestickChart = ({
   const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const requestIdRef = useRef<number>(0);
 
-  const [loading, setLoading] = useState(false);
   const [period, setPeriod] = useState<Period>(initialPeriod);
   const [ohlcData, setOhlcData] = useState<OHLCData[]>(data ?? []);
   const [isPending, startTransition] = useTransition();
@@ -27,7 +26,6 @@ const CandlestickChart = ({
   const fetchOHLCData = async (selectedPeriod: Period) => {
     // increment request id to invalidate previous requests
     const reqId = ++requestIdRef.current;
-    setLoading(true);
     try {
       const { days } = PERIOD_CONFIG[selectedPeriod];
       const newData = await coingeckoFetcher<OHLCData[]>(`/coins/${coinId}/ohlc`, {
@@ -40,12 +38,7 @@ const CandlestickChart = ({
       }
     } catch (error) {
       console.error("Error fetching OHLC data:", error);
-    } finally {
-      // only clear loading if this request is the latest
-      if (reqId === requestIdRef.current) {
-        setLoading(false);
-      }
-    }
+    } 
   };
 
   const handlePeriodChange = (newPeriod: Period) => {
@@ -126,7 +119,7 @@ const CandlestickChart = ({
               key={value}
               className={period === value ? "config-button-active" : "config-button"}
               onClick={() => handlePeriodChange(value)}
-              disabled={loading}
+              disabled={isPending}
             >
               {label}
             </button>
