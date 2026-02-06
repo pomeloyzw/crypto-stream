@@ -87,6 +87,13 @@ const CandlestickChart = ({
   }, [height]);
 
   useEffect(() => {
+    const showTime = ["daily", "weekly", "monthly"].includes(period);
+    chartRef.current?.applyOptions({
+      timeScale: { timeVisible: showTime, secondsVisible: false },
+    });
+  }, [period]);
+
+  useEffect(() => {
     if (!candleSeriesRef.current) return;
 
     const convertedToSeconds = ohlcData.map(
