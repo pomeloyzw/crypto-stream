@@ -89,6 +89,8 @@ export const buildPageNumbers = (
   const MAX_VISIBLE_PAGES = 5;
 
   const pages: (number | typeof ELLIPSIS)[] = [];
+  if (totalPages <= 0) return pages;
+  const safeCurrent = Math.min(Math.max(currentPage, 1), totalPages);
 
   if (totalPages <= MAX_VISIBLE_PAGES) {
     for (let i = 1; i <= totalPages; i += 1) {
@@ -99,8 +101,8 @@ export const buildPageNumbers = (
 
   pages.push(1);
 
-  const start = Math.max(2, currentPage - 1);
-  const end = Math.min(totalPages - 1, currentPage + 1);
+  const start = Math.max(2, safeCurrent - 1);
+  const end = Math.min(totalPages - 1, safeCurrent + 1);
 
   if (start > 2) {
     pages.push(ELLIPSIS);
