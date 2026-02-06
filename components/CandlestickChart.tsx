@@ -17,6 +17,7 @@ const CandlestickChart = ({
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
+  const requestIdRef = useRef<number>(0);
 
   const [loading, setLoading] = useState(false);
   const [period, setPeriod] = useState<Period>(initialPeriod);
@@ -24,6 +25,8 @@ const CandlestickChart = ({
   const [isPending, startTransition] = useTransition();
 
   const fetchOHLCData = async (selectedPeriod: Period) => {
+    // increment request id to invalidate previous requests
+    const reqId = ++requestIdRef.current;
     setLoading(true);
     try {
       const { days } = PERIOD_CONFIG[selectedPeriod];
@@ -31,11 +34,17 @@ const CandlestickChart = ({
         vs_currency: "usd",
         days,
       });
-      setOhlcData(newData ?? []);
+      // only apply response if this request is the latest
+      if (reqId === requestIdRef.current) {
+        setOhlcData(newData ?? []);
+      }
     } catch (error) {
       console.error("Error fetching OHLC data:", error);
     } finally {
-      setLoading(false);
+      // only clear loading if this request is the latest
+      if (reqId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   };
 
