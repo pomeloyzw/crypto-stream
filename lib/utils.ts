@@ -18,17 +18,42 @@ export function formatCurrency(
 
   if (showSymbol === undefined || showSymbol === true) {
     const currencyCode = currency?.toUpperCase() || 'USD';
+
+    // feature-detect narrowSymbol support for USD formatting
+    let currencyDisplay: 'narrowSymbol' | 'symbol' = 'symbol';
+    if (currencyCode === 'USD') {
+      try {
+        // Some environments (older Safari) throw when using 'narrowSymbol'
+        (0).toLocaleString(undefined, {
+          style: 'currency',
+          currency: 'USD',
+          currencyDisplay: 'narrowSymbol',
+        });
+        currencyDisplay = 'narrowSymbol';
+      } catch {
+        currencyDisplay = 'symbol';
+      }
+    }
+
     const formatted = value.toLocaleString(undefined, {
       style: 'currency',
       currency: currencyCode,
       minimumFractionDigits: digits ?? 2,
       maximumFractionDigits: digits ?? 2,
-      currencyDisplay: 'symbol',
+      currencyDisplay: currencyDisplay,
     });
-    // Replace 'US$' with '$' for USD
+
+    // Robust normalization for USD: handle variants like 'US$', 'USD ' and locale spacing
     if (currencyCode === 'USD') {
-      return formatted.replace('US$', '$');
+      const normalized = formatted.replace(/\u00A0/g, ' ')
+        .replace(/US\$|USD\s*/g, '$')
+        .replace(/\$+/g, '$')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      return normalized;
     }
+
     return formatted;
   }
   return value.toLocaleString(undefined, {
