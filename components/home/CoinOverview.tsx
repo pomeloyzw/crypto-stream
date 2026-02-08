@@ -5,7 +5,6 @@ import { CoinOverviewFallback } from "./fallback";
 import CandlestickChart from "../CandlestickChart";
 
 const CoinOverview = async () => {
-  let coin: CoinDetailsData | undefined
   let coinOHLC: OHLCData[] | undefined
 
   const [coinResult, ohlcResult] = await Promise.allSettled([
@@ -21,7 +20,6 @@ const CoinOverview = async () => {
     return <CoinOverviewFallback />
   }
 
-  coin = coinResult.value
   if (ohlcResult.status === "fulfilled") {
     coinOHLC = ohlcResult.value
   } else {
@@ -29,6 +27,7 @@ const CoinOverview = async () => {
     coinOHLC = []
   }
 
+  const coin = coinResult.value;
   if (!coin) return <CoinOverviewFallback />
 
   return (
