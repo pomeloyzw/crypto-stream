@@ -63,10 +63,19 @@ export function formatCurrency(
 }
 
 export function formatPercentage(change: number | null | undefined, decimalPlaces?: number): string {
+  const clamped = (() => {
+    const DEFAULT = 1;
+    if (decimalPlaces === undefined || decimalPlaces === null) return DEFAULT;
+    const intVal = Math.trunc(Number(decimalPlaces));
+    if (!Number.isFinite(intVal)) return DEFAULT;
+    return Math.min(100, Math.max(0, intVal));
+  })();
+
   if (change === null || change === undefined || isNaN(change)) {
-    return '0.0%';
+    return `${(0).toFixed(clamped)}%`;
   }
-  const formattedChange = change.toFixed(decimalPlaces ?? 1);
+
+  const formattedChange = change.toFixed(clamped);
   return `${formattedChange}%`;
 }
 
