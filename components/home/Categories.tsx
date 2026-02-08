@@ -32,7 +32,7 @@ const Categories = async () => {
       cell: (category) => {
         const isTrendingUp = category.market_cap_change_24h > 0;
         return (
-          <div className={cn("change-cell000", isTrendingUp ? "text-green-500" : "text-red-500")}>
+          <div className={cn("change-cell", isTrendingUp ? "text-green-500" : "text-red-500")}>
             <p className="flex items-center">
               {formatPercentage(category.market_cap_change_24h, 2)}
               {isTrendingUp ? (
