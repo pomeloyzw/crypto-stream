@@ -73,3 +73,56 @@ export function TrendingCoinsFallback() {
     </div>
   )
 }
+
+export function CategoriesFallback() {
+  const data = new Array(5).fill(null).map((_, i) => ({ id: i }))
+
+  const columns = [
+    {
+      header: "Category",
+      headClassName: "",
+      cell: () => <div className="category-skeleton bg-dark-400 rounded" />,
+    },
+    {
+      header: "Top Gainers",
+      cell: () => (
+        <div className="top-gainers-cell">
+          <div className="coin-skeleton bg-dark-400" />
+          <div className="coin-skeleton bg-dark-400" />
+          <div className="coin-skeleton bg-dark-400" />
+        </div>
+      ),
+    },
+    {
+      header: "24h Change",
+      headClassName: "change-header-cell",
+      cell: () => (
+        <div className="change-cell">
+          <div className="change-icon bg-dark-400" />
+          <div className="value-skeleton-sm bg-dark-400 rounded" />
+        </div>
+      ),
+    },
+    {
+      header: "Market Cap",
+      headClassName: "market-cap-cell",
+      cell: () => <div className="value-skeleton-sm bg-dark-400 rounded" />,
+    },
+    {
+      header: "24h Volume",
+      headClassName: "volume-cell",
+      cell: () => <div className="value-skeleton-sm bg-dark-400 rounded" />,
+    },
+  ]
+
+  return (
+    <div id="categories-fallback">
+      <h4>Top Categories</h4>
+      <DataTable
+        columns={columns}
+        data={data}
+        rowKey={(r) => r.id}
+      />
+    </div>
+  )
+}

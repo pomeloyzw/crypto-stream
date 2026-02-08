@@ -17,12 +17,19 @@ export function formatCurrency(
   }
 
   if (showSymbol === undefined || showSymbol === true) {
-    return value.toLocaleString(undefined, {
+    const currencyCode = currency?.toUpperCase() || 'USD';
+    const formatted = value.toLocaleString(undefined, {
       style: 'currency',
-      currency: currency?.toUpperCase() || 'USD',
+      currency: currencyCode,
       minimumFractionDigits: digits ?? 2,
       maximumFractionDigits: digits ?? 2,
+      currencyDisplay: 'symbol',
     });
+    // Replace 'US$' with '$' for USD
+    if (currencyCode === 'USD') {
+      return formatted.replace('US$', '$');
+    }
+    return formatted;
   }
   return value.toLocaleString(undefined, {
     minimumFractionDigits: digits ?? 2,
@@ -30,11 +37,11 @@ export function formatCurrency(
   });
 }
 
-export function formatPercentage(change: number | null | undefined): string {
+export function formatPercentage(change: number | null | undefined, decimalPlaces?: number): string {
   if (change === null || change === undefined || isNaN(change)) {
     return '0.0%';
   }
-  const formattedChange = change.toFixed(1);
+  const formattedChange = change.toFixed(decimalPlaces ?? 1);
   return `${formattedChange}%`;
 }
 
