@@ -17,12 +17,44 @@ export function formatCurrency(
   }
 
   if (showSymbol === undefined || showSymbol === true) {
-    return value.toLocaleString(undefined, {
+    const currencyCode = currency?.toUpperCase() || 'USD';
+
+    // feature-detect narrowSymbol support for USD formatting
+    let currencyDisplay: 'narrowSymbol' | 'symbol' = 'symbol';
+    if (currencyCode === 'USD') {
+      try {
+        // Some environments (older Safari) throw when using 'narrowSymbol'
+        (0).toLocaleString(undefined, {
+          style: 'currency',
+          currency: 'USD',
+          currencyDisplay: 'narrowSymbol',
+        });
+        currencyDisplay = 'narrowSymbol';
+      } catch {
+        currencyDisplay = 'symbol';
+      }
+    }
+
+    const formatted = value.toLocaleString(undefined, {
       style: 'currency',
-      currency: currency?.toUpperCase() || 'USD',
+      currency: currencyCode,
       minimumFractionDigits: digits ?? 2,
       maximumFractionDigits: digits ?? 2,
+      currencyDisplay: currencyDisplay,
     });
+
+    // Robust normalization for USD: handle variants like 'US$', 'USD ' and locale spacing
+    if (currencyCode === 'USD') {
+      const normalized = formatted.replace(/\u00A0/g, ' ')
+        .replace(/US\$|USD\s*/g, '$')
+        .replace(/\$+/g, '$')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      return normalized;
+    }
+
+    return formatted;
   }
   return value.toLocaleString(undefined, {
     minimumFractionDigits: digits ?? 2,
@@ -30,11 +62,20 @@ export function formatCurrency(
   });
 }
 
-export function formatPercentage(change: number | null | undefined): string {
+export function formatPercentage(change: number | null | undefined, decimalPlaces?: number): string {
+  const clamped = (() => {
+    const DEFAULT = 1;
+    if (decimalPlaces === undefined || decimalPlaces === null) return DEFAULT;
+    const intVal = Math.trunc(Number(decimalPlaces));
+    if (!Number.isFinite(intVal)) return DEFAULT;
+    return Math.min(100, Math.max(0, intVal));
+  })();
+
   if (change === null || change === undefined || isNaN(change)) {
-    return '0.0%';
+    return `${(0).toFixed(clamped)}%`;
   }
-  const formattedChange = change.toFixed(1);
+
+  const formattedChange = change.toFixed(clamped);
   return `${formattedChange}%`;
 }
 
