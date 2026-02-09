@@ -29,7 +29,8 @@ export async function coingeckoFetcher<T>(
     res = await fetch(url, {
       headers: {
         "Accept": "application/json",
-        "x-cg-pro-api-key": API_KEY,
+        // "x-cg-pro-api-key": API_KEY,
+        "x-cg-demo-api-key": API_KEY,
       } as Record<string, string>,
       next: { revalidate },
       signal: controller.signal,

@@ -8,10 +8,13 @@ const CoinOverview = async () => {
   let coinOHLC: OHLCData[] | undefined
 
   const [coinResult, ohlcResult] = await Promise.allSettled([
-    coingeckoFetcher<CoinDetailsData>("/coins/bitcoin"),
+    coingeckoFetcher<CoinDetailsData>("/coins/bitcoin", {
+        dex_pair_format: 'symbol',
+    }),
     coingeckoFetcher<OHLCData[]>("/coins/bitcoin/ohlc", {
       vs_currency: "usd",
       days: 1,
+      precision: "full",
     }),
   ])
 
