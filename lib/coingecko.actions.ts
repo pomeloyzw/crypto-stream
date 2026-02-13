@@ -4,6 +4,8 @@ import qs from "query-string";
 
 const BASE_URL = process.env.COINGECKO_API_URL;
 const API_KEY = process.env.COINGECKO_API_KEY;
+const API_KEY_HEADER =
+  process.env.COINGECKO_API_KEY_HEADER?.trim() || "x-cg-demo-api-key";
 
 if (!BASE_URL) {
   throw new Error("COINGECKO_API_URL is not defined");
@@ -29,7 +31,7 @@ export async function coingeckoFetcher<T>(
     res = await fetch(url, {
       headers: {
         "Accept": "application/json",
-        "x-cg-pro-api-key": API_KEY,
+        [API_KEY_HEADER]: API_KEY,
       } as Record<string, string>,
       next: { revalidate },
       signal: controller.signal,
