@@ -37,7 +37,6 @@ const Coins = async ({ searchParams }: NextPageProps) => {
           #{coin.market_cap_rank}
         </Link>
       ),
-      ),
     },
     {
       header: "Token",
