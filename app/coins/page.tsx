@@ -30,12 +30,16 @@ const Coins = async ({ searchParams }: NextPageProps) => {
       header: "Rank",
       cellClassName: "rank-cell",
       cell: (coin) => (
-        <Link
-          href={`/coins/${coin.id}`}
-          aria-label={`View ${coin.name}`}
-        >
+        <>
           #{coin.market_cap_rank}
-        </Link>
+          <Link
+            href={`/coins/${coin.id}`}
+            aria-label={`View ${coin.name}`}
+          >
+            <span className="sr-only">View {coin.name}</span>
+          </Link>
+        </>
+
       ),
     },
     {
@@ -82,11 +86,11 @@ const Coins = async ({ searchParams }: NextPageProps) => {
   ];
 
   const hasMorePages = coinsData.length === pageSize;
-  const estimatedTotalPages = hasMorePages
-  ? (currentPage >= 100
-    ? Math.ceil(currentPage / 100) * 100 + 100
-    : 100)
-  : currentPage;
+  const estimatedTotalPages = !hasMorePages
+    ? currentPage
+    : currentPage >= 100
+      ? Math.ceil(currentPage / 100) * 100 + 100
+      : 100;
 
   return (
     <main id="coins-page">
@@ -100,10 +104,10 @@ const Coins = async ({ searchParams }: NextPageProps) => {
           rowKey={(coin) => coin.id}
         />
 
-        <CoinsPagination 
-          currentPage={currentPage} 
-          totalPages={estimatedTotalPages} 
-          hasMorePages={hasMorePages} 
+        <CoinsPagination
+          currentPage={currentPage}
+          totalPages={estimatedTotalPages}
+          hasMorePages={hasMorePages}
         />
       </div>
     </main>
