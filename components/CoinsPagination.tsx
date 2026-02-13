@@ -29,7 +29,15 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
       <PaginationContent className="pagination-content">
         <PaginationItem className="pagination-control prev">
           <PaginationPrevious
-            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+            href="#"
+            aria-disabled={currentPage === 1}
+            onClick={(e) => {
+              if (currentPage === 1) e.preventDefault();
+              else {
+                e.preventDefault();
+                handlePageChange(currentPage - 1);
+              }
+            }}
             className={currentPage === 1 ? "control-disabled" : "control-button"}
           />
         </PaginationItem>
@@ -41,7 +49,12 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
                 <PaginationEllipsis />
               ) : (
                 <PaginationLink
-                  onClick={() => handlePageChange(page)}
+                  href={`#page-${page}`}
+                  aria-disabled={currentPage === page}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(page);
+                  }}
                   className={cn("page-link", {
                     "page-link-active": currentPage === page
                   })}
@@ -55,7 +68,15 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
   
         <PaginationItem className="pagination-control next">
           <PaginationNext
-            onClick={() => !isLastPage && handlePageChange(currentPage + 1)}
+            href="#"
+            aria-disabled={isLastPage}
+            onClick={(e) => {
+              if (isLastPage) e.preventDefault();
+              else {
+                e.preventDefault();
+                handlePageChange(currentPage + 1);
+              }
+            }}
             className={isLastPage ? "control-disabled" : "control-button"}
           />
         </PaginationItem>
