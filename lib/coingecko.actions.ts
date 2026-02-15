@@ -55,3 +55,33 @@ export async function coingeckoFetcher<T>(
 
   return res.json();
 }
+
+export async function getPools(
+  id: string,
+  network?: string | null,
+  contractAddress?: string | null
+): Promise<PoolData> {
+  const fallback: PoolData = {
+    id: "",
+    name: "",
+    address: "",
+    network: "",
+  };
+
+  if (network && contractAddress) {
+    const poolData = await coingeckoFetcher<{ data: PoolData[] }>(
+      `/onchain/networks/${network}/tokens/${contractAddress}/pools`);
+    return poolData.data?.[0] ?? fallback;
+  }
+
+  try {
+    const poolData = await coingeckoFetcher<{ data: PoolData[] }>(
+      `/onchain/search/pools`, { query: id });
+    return poolData.data?.[0] ?? fallback;
+  } catch (error) {
+    return fallback;
+  }
+
+  return fallback;
+
+}

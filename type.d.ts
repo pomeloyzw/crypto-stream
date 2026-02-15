@@ -152,6 +152,38 @@ interface ExtendedPriceData {
   timestamp?: number;
 }
 
+interface UseBinanceWebSocketProps {
+  symbol: string; // Trading pair symbol (e.g., 'btcusdt', 'ethusdt')
+  interval?: '1m' | '3m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w' | '1M';
+}
+
+interface UseBinanceWebSocketReturn {
+  price: ExtendedPriceData | null;
+  trades: Trade[];
+  ohlcv: OHLCData | null;
+  isConnected: boolean;
+}
+
+interface ExtendedPriceData {
+  usd: number;
+  coin: string;
+  price: number;
+  change24h: number;
+  marketCap: number;
+  volume24h: number;
+  timestamp: number;
+}
+
+interface Trade {
+  price: number;
+  value: number;
+  timestamp: number;
+  type: 'buy' | 'sell';
+  amount: number;
+}
+
+type OHLCData = [number, number, number, number, number];
+
 interface WebSocketMessage {
   type?: string;
   c?: string;
