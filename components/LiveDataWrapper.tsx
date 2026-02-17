@@ -5,14 +5,17 @@ import CandlestickChart from "./CandlestickChart"
 import { useBinanceWebSocket } from "@/hooks/useBinanceWebSocket";
 import { formatCurrency, timeAgo } from "@/lib/utils";
 import DataTable from "./DataTable";
+import { useState } from "react";
 
 const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveDataProps) => {
+  const [liveInterval, setLiveInterval] = useState<"1m" | "3m">("1m");
+
   // Convert coin symbol to Binance format (e.g., 'btc' -> 'btcusdt')
   const binanceSymbol = `${coin.symbol.toLowerCase()}usdt`;
-  
-  const { trades } = useBinanceWebSocket({
+
+  const { trades, ohlcv } = useBinanceWebSocket({
     symbol: binanceSymbol,
-    interval: '1m',
+    interval: liveInterval,
   });
 
   const tradeColumns: DataTableColumn<Trade>[] = [
@@ -46,14 +49,22 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
       cell: (trade) => (trade.timestamp ? timeAgo(trade.timestamp) : '-'),
     },
   ];
-  
+
   return (
     <section id="live-data-wrapper">
       <p>Coin Header</p>
       <Separator className="divider" />
 
       <div className="trend">
-        <CandlestickChart coinId={coinId} data={coinOHLCData}>
+        <CandlestickChart
+          coinId={coinId}
+          data={coinOHLCData}
+          liveOhlcv={ohlcv}
+          mode="live"
+          initialPeriod="daily"
+          liveInterval={liveInterval}
+          setLiveInterval={setLiveInterval}
+        >
           <h4>Trend Overview</h4>
         </CandlestickChart>
       </div>
@@ -64,11 +75,11 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
         <div className="trades">
           <h4>Recent Trades</h4>
 
-          <DataTable 
-            columns={tradeColumns} 
-            data={trades} 
-            rowKey={(_, index) => index} 
-            tableClassName="trades-table" 
+          <DataTable
+            columns={tradeColumns}
+            data={trades}
+            rowKey={(_, index) => index}
+            tableClassName="trades-table"
           />
         </div>
       )}

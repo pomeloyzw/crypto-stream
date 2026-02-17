@@ -18,6 +18,9 @@ export const useBinanceWebSocket = ({
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const MAX_RECONNECT_ATTEMPTS = 5;
+  
+  // Buffer to collect trades between candle closes
+  const tradesBufferRef = useRef<Trade[]>([]);
 
   useEffect(() => {
     if (!symbol) return;
@@ -38,7 +41,7 @@ export const useBinanceWebSocket = ({
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('Binance WebSocket connected');
+        console.log(`Binance WebSocket connected with interval: ${interval}`);
         setIsWsReady(true);
         reconnectAttemptsRef.current = 0;
       };
@@ -72,20 +75,40 @@ export const useBinanceWebSocket = ({
               type: data.m ? 'sell' : 'buy', // m = true means buyer is market maker (sell)
               amount: parseFloat(data.q),
             };
-            setTrades((prev) => [newTrade, ...prev].slice(0, 7));
+            console.log('Trade received:', { timestamp: data.T, date: new Date(data.T).toISOString() });
+            // Buffer trades instead of immediately updating state
+            tradesBufferRef.current = [newTrade, ...tradesBufferRef.current].slice(0, 20);
           }
 
           // Handle Kline/Candlestick Stream (OHLCV)
           if (data.e === 'kline') {
             const kline = data.k;
-            const candle: OHLCData = [
-              kline.t, // Open time
-              parseFloat(kline.o), // Open
-              parseFloat(kline.h), // High
-              parseFloat(kline.l), // Low
-              parseFloat(kline.c), // Close
-            ];
-            setOhlcv(candle);
+            
+            // Only update when the candle is closed (x = true) to control update frequency
+            // This means: 1m interval = update every 1 minute, 3m interval = update every 3 minutes
+            if (kline.x) {
+              console.log(`Kline closed - interval: ${kline.i}, flushing ${tradesBufferRef.current.length} trades`);
+              
+              // Update OHLCV data
+              const candle: OHLCData = [
+                Math.floor(kline.t / 1000), // Open time in seconds (convert from ms)
+                parseFloat(kline.o), // Open
+                parseFloat(kline.h), // High
+                parseFloat(kline.l), // Low
+                parseFloat(kline.c), // Close
+              ];
+              setOhlcv(candle);
+              
+              // Flush trades buffer to state (show top 7 trades)
+              const tradesToFlush = tradesBufferRef.current.slice(0, 7);
+              console.log('Flushing trades:', tradesToFlush.map(t => ({ 
+                timestamp: t.timestamp, 
+                date: t.timestamp ? new Date(t.timestamp).toISOString() : 'no timestamp'
+              })));
+              setTrades(tradesToFlush);
+              // Clear the buffer for the next interval
+              tradesBufferRef.current = [];
+            }
           }
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
