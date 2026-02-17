@@ -1,6 +1,7 @@
 import { cn, formatCurrency, formatPercentage } from "@/lib/utils";
-import { Badge, TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import Image from 'next/image';
+import { Badge } from "./ui/badge";
 
 const CoinHeader = ({ 
   livePriceChangePercentage24h,
@@ -10,7 +11,7 @@ const CoinHeader = ({
   livePrice,
   priceChange24h
  }: LiveCoinHeaderProps) => {
-const isTrendingUp = livePriceChangePercentage24h > 0;
+  const isTrendingUp = livePriceChangePercentage24h > 0;
   const isThirtyDayUp = priceChangePercentage30d > 0;
   const isPriceChangeUp = priceChange24h > 0;
 
