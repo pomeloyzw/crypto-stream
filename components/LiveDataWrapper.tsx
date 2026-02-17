@@ -6,6 +6,7 @@ import { useBinanceWebSocket } from "@/hooks/useBinanceWebSocket";
 import { formatCurrency, timeAgo } from "@/lib/utils";
 import DataTable from "./DataTable";
 import { useState } from "react";
+import CoinHeader from "./CoinHeader";
 
 const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveDataProps) => {
   const [liveInterval, setLiveInterval] = useState<"1m" | "3m">("1m");
@@ -13,7 +14,7 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
   // Convert coin symbol to Binance format (e.g., 'btc' -> 'btcusdt')
   const binanceSymbol = `${coin.symbol.toLowerCase()}usdt`;
 
-  const { trades, ohlcv } = useBinanceWebSocket({
+  const { trades, ohlcv, price } = useBinanceWebSocket({
     symbol: binanceSymbol,
     interval: liveInterval,
   });
@@ -52,7 +53,15 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
 
   return (
     <section id="live-data-wrapper">
-      <p>Coin Header</p>
+      <CoinHeader 
+        name={coin.name}
+        image={coin.image.large}
+        livePrice={price?.usd ?? coin.market_data.current_price.usd}
+        livePriceChangePercentage24h={price?.change24h ?? 
+          coin.market_data.price_change_percentage_24h_in_currency.usd}
+        priceChangePercentage30d={coin.market_data.price_change_percentage_30d_in_currency.usd}
+        priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
+      />
       <Separator className="divider" />
 
       <div className="trend">
