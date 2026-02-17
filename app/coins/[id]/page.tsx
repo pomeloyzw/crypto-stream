@@ -1,3 +1,4 @@
+import Converter from "@/components/Converter";
 import LiveDataWrapper from "@/components/LiveDataWrapper";
 import { coingeckoFetcher, getPools } from "@/lib/coingecko.actions";
 import { formatCurrency } from "@/lib/utils";
@@ -73,7 +74,11 @@ const page = async ({ params }: NextPageProps) => {
       </section>
 
       <section className="secondary">
-        <p>Converter</p>
+        <Converter
+          symbol={coinData.symbol}
+          icon={coinData.image.small}
+          priceList={coinData.market_data.current_price}
+        />
         <div className="details">
           <h4>Coin Details</h4>
           <ul className="details-grid">
@@ -94,8 +99,6 @@ const page = async ({ params }: NextPageProps) => {
             ))}
           </ul>
         </div>
-
-        <p>Top Gainers and Losers</p>
       </section>
     </main>
   )
