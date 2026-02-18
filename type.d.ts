@@ -13,8 +13,8 @@ interface CandlestickChartProps {
   children?: React.ReactNode;
   mode?: 'historical' | 'live';
   initialPeriod?: Period;
-  liveInterval?: '1m' | '3m';
-  setLiveInterval?: (interval: '1m' | '3m') => void;
+  liveInterval?: '1s' | '1m';
+  setLiveInterval?: (interval: '1s' | '1m') => void;
 }
 
 interface ConverterProps {
@@ -154,7 +154,7 @@ interface ExtendedPriceData {
 
 interface UseBinanceWebSocketProps {
   symbol: string; // Trading pair symbol (e.g., 'btcusdt', 'ethusdt')
-  interval?: '1m' | '3m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w' | '1M';
+  interval?: '1s' | '1m' | '3m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w' | '1M';
 }
 
 interface UseBinanceWebSocketReturn {

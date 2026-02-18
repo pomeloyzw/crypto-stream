@@ -9,7 +9,7 @@ import { useState } from "react";
 import CoinHeader from "./CoinHeader";
 
 const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveDataProps) => {
-  const [liveInterval, setLiveInterval] = useState<"1m" | "3m">("1m");
+  const [liveInterval, setLiveInterval] = useState<"1s" | "1m">("1s");
 
   // Convert coin symbol to Binance format (e.g., 'btc' -> 'btcusdt')
   const binanceSymbol = `${coin.symbol.toLowerCase()}usdt`;
