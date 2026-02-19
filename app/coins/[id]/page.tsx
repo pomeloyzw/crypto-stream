@@ -52,13 +52,13 @@ const page = async ({ params }: NextPageProps) => {
     {
       label: "Explorer",
       value: "-",
-      link: isValidUrl(coinData.links.blockchain_site[0]) ? coinData.links.blockchain_site[0] : undefined,
+      link: isValidUrl(coinData.links.homepage?.[0]) ? coinData.links.homepage![0] : undefined,
       linkText: "Explorer",
     },
     {
       label: "Community",
       value: "-",
-      link: isValidUrl(coinData.links.subreddit_url) ? coinData.links.subreddit_url : undefined,
+      link: isValidUrl(coinData.links.blockchain_site?.[0]) ? coinData.links.blockchain_site![0] : undefined,
       linkText: "Community",
     },
   ];
@@ -90,7 +90,7 @@ const page = async ({ params }: NextPageProps) => {
                 <span className="label">{label}</span>
                 {link ? (
                   <div className="link">
-                    <Link href={link} target="_blank">
+                    <Link href={link} target="_blank" rel="noopener noreferrer">
                       {linkText || label}
                     </Link>
                     <ArrowUpRight size={16} />
