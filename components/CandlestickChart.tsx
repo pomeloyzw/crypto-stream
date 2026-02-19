@@ -234,6 +234,7 @@ const CandlestickChart = ({
                 key={value}
                 className={klineInterval === value ? "config-button-active" : "config-button"}
                 onClick={() => handleIntervalChange(value)}
+                disabled={isPending}
               >
                 {label}
               </button>
