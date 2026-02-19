@@ -34,7 +34,7 @@ const page = async ({ params }: NextPageProps) => {
     },
     {
       label: "Market Cap Rank",
-      value: `# ${coinData.market_cap_rank}`,
+      value: coinData.market_cap_rank != null ? `# ${coinData.market_cap_rank}` : "—",
     },
     {
       label: "Total Volume",
