@@ -8,7 +8,7 @@ import DataTable from "./DataTable";
 import { useState } from "react";
 import CoinHeader from "./CoinHeader";
 
-const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveDataProps) => {
+const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
   const [klineInterval, setKlineInterval] = useState<BinanceKlineInterval>('30m');
 
   // Convert coin symbol to Binance format (e.g., 'btc' -> 'btcusdt')
