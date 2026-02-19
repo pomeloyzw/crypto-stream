@@ -1,5 +1,5 @@
 # crypto-pulse
-A real-time crypto analytics terminal powered by the CoinGecko API REST endpoints and crypto WebSocket API.
+A real-time crypto analytics terminal powered by the CoinGecko API REST endpoints and Binance (free alternative) WebSocket API.
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
