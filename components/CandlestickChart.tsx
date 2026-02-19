@@ -26,11 +26,15 @@ const CandlestickChart = ({
   const prevOhlcDataLengthRef = useRef<number>(data?.length || 0);
   const requestIdRef = useRef<number>(0);
   const binanceDataLoadedRef = useRef(false);
+  const ohlcDataRef = useRef<OHLCData[]>([]);
 
   const [period, setPeriod] = useState<Period>(initialPeriod);
   // In live mode, start empty — Binance data will be fetched on mount
   const [ohlcData, setOhlcData] = useState<OHLCData[]>(mode === 'live' ? [] : (data ?? []));
   const [isPending, startTransition] = useTransition();
+
+  // Keep ref in sync so the chart-creation effect always reads current data
+  ohlcDataRef.current = ohlcData;
 
   const fetchOHLCData = async (selectedPeriod: Period, overrideInterval?: BinanceKlineInterval) => {
     // increment request id to invalidate previous requests
@@ -113,8 +117,8 @@ const CandlestickChart = ({
     });
     const series = chart.addSeries(CandlestickSeries, getCandlestickConfig());
 
-    // Ensure timestamps are converted to seconds before passing to the chart
-    const convertedToSeconds = ohlcData.map(
+    // Use ref to read the latest data (avoids stale closure since deps is [height])
+    const convertedToSeconds = ohlcDataRef.current.map(
       (item) => [Math.floor(item[0] / 1000), item[1], item[2], item[3], item[4]] as OHLCData
     );
 
