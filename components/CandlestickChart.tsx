@@ -117,9 +117,10 @@ const CandlestickChart = ({
     });
     const series = chart.addSeries(CandlestickSeries, getCandlestickConfig());
 
-    // Use ref to read the latest data (avoids stale closure since deps is [height])
+    // Binance data is already in seconds; CoinGecko data is in milliseconds
+    const toSeconds = (ts: number) => mode === 'live' ? ts : Math.floor(ts / 1000);
     const convertedToSeconds = ohlcDataRef.current.map(
-      (item) => [Math.floor(item[0] / 1000), item[1], item[2], item[3], item[4]] as OHLCData
+      (item) => [toSeconds(item[0]), item[1], item[2], item[3], item[4]] as OHLCData
     );
 
     series.setData(convertOHLCData(convertedToSeconds));
@@ -156,8 +157,10 @@ const CandlestickChart = ({
   useEffect(() => {
     if (!candleSeriesRef.current) return;
 
+    // Binance data is already in seconds; CoinGecko data is in milliseconds
+    const toSeconds = (ts: number) => mode === 'live' ? ts : Math.floor(ts / 1000);
     const convertedToSeconds = ohlcData.map(
-      (item) => [Math.floor(item[0] / 1000), item[1], item[2], item[3], item[4]] as OHLCData
+      (item) => [toSeconds(item[0]), item[1], item[2], item[3], item[4]] as OHLCData
     );
 
     const converted = convertOHLCData(convertedToSeconds);

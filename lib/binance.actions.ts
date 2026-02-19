@@ -38,7 +38,7 @@ export async function fetchBinanceKlines(
   const rawKlines: (string | number)[][] = await response.json();
 
   return rawKlines.map((k) => [
-    Number(k[0]),                     // Open time in milliseconds (same as CoinGecko format)
+    Math.floor(Number(k[0]) / 1000),  // Convert ms → seconds to align with live kline data
     parseFloat(String(k[1])),         // Open
     parseFloat(String(k[2])),         // High
     parseFloat(String(k[3])),         // Low
