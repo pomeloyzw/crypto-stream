@@ -1,6 +1,6 @@
 import Converter from "@/components/Converter";
 import LiveDataWrapper from "@/components/LiveDataWrapper";
-import { coingeckoFetcher, getPools } from "@/lib/coingecko.actions";
+import { coingeckoFetcher } from "@/lib/coingecko.actions";
 import { formatCurrency } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
@@ -18,14 +18,6 @@ const page = async ({ params }: NextPageProps) => {
       precision: "full",
     }),
   ]);
-
-  const platform = coinData.asset_platform_id ?
-    coinData.detail_platforms?.[coinData.asset_platform_id] :
-    null;
-  const network = platform?.geckoterminal_url?.split("/")?.[3] || null;
-  const contractAddress = platform?.contract_address || null;
-
-  const pool = await getPools(id, network, contractAddress);
 
   const isValidUrl = (url: string | undefined | null): url is string =>
     typeof url === 'string' && url.trim().length > 0 && /^https?:\/\//i.test(url.trim());
@@ -46,19 +38,19 @@ const page = async ({ params }: NextPageProps) => {
     {
       label: "Website",
       value: "-",
-      link: isValidUrl(coinData.links.homepage[0]) ? coinData.links.homepage[0] : undefined,
+      link: isValidUrl(coinData.links.homepage?.[0]) ? coinData.links.homepage![0] : undefined,
       linkText: "Homepage",
     },
     {
       label: "Explorer",
       value: "-",
-      link: isValidUrl(coinData.links.homepage?.[0]) ? coinData.links.homepage![0] : undefined,
+      link: isValidUrl(coinData.links.blockchain_site?.[0]) ? coinData.links.blockchain_site![0] : undefined,
       linkText: "Explorer",
     },
     {
       label: "Community",
       value: "-",
-      link: isValidUrl(coinData.links.blockchain_site?.[0]) ? coinData.links.blockchain_site![0] : undefined,
+      link: isValidUrl(coinData.links.subreddit_url) ? coinData.links.subreddit_url : undefined,
       linkText: "Community",
     },
   ];
