@@ -59,7 +59,7 @@ const CoinHeader = ({
           <h1>{formatCurrency(livePrice)}</h1>
           <Badge className={cn('badge', trendToday === 'up' ? 'badge-up' : trendToday === 'down' ? 'badge-down' : 'badge-neutral')}>
             {formatPercentage(livePriceChangePercentage24h)}
-            {trendToday === 'down' ? <TrendingDown /> : <TrendingUp />}
+            {trendToday !== 'neutral' && (trendToday === 'down' ? <TrendingDown /> : <TrendingUp />)}
             (24h)
           </Badge>
         </div>
