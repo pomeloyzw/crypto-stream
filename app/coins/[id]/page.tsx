@@ -19,10 +19,10 @@ const page = async ({ params }: NextPageProps) => {
     }),
   ]);
 
-  const platform = coinData.asset_platform_id ? 
-    coinData.detail_platforms?.[coinData.asset_platform_id] : 
+  const platform = coinData.asset_platform_id ?
+    coinData.detail_platforms?.[coinData.asset_platform_id] :
     null;
-  const network = platform?.geckoterminal_url.split("/")[3] || null;
+  const network = platform?.geckoterminal_url?.split("/")?.[3] || null;
   const contractAddress = platform?.contract_address || null;
 
   const pool = await getPools(id, network, contractAddress);
@@ -36,11 +36,11 @@ const page = async ({ params }: NextPageProps) => {
       label: "Market Cap Rank",
       value: `# ${coinData.market_cap_rank}`,
     },
-        {
+    {
       label: "Total Volume",
       value: formatCurrency(coinData.market_data.total_volume.usd),
     },
-        {
+    {
       label: "Website",
       value: "-",
       link: coinData.links.homepage[0],
@@ -63,11 +63,11 @@ const page = async ({ params }: NextPageProps) => {
   return (
     <main id="coin-details-page">
       <section className="primary">
-        <LiveDataWrapper 
-          coinId={id} 
-          poolId={pool?.id} 
-          coin={coinData} 
-          coinOHLCData={coinOHLCData} 
+        <LiveDataWrapper
+          coinId={id}
+          poolId={pool?.id}
+          coin={coinData}
+          coinOHLCData={coinOHLCData}
         >
           <h4>Exchange Listings</h4>
         </LiveDataWrapper>
