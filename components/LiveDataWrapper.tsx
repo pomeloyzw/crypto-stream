@@ -39,8 +39,8 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
       header: 'Buy/Sell',
       cellClassName: 'type-cell',
       cell: (trade) => (
-        <span className={trade.type === 'b' ? 'text-green-500' : 'text-red-500'}>
-          {trade.type === 'b' ? 'Buy' : 'Sell'}
+        <span className={trade.type === 'buy' ? 'text-green-500' : 'text-red-500'}>
+          {trade.type === 'buy' ? 'Buy' : 'Sell'}
         </span>
       ),
     },

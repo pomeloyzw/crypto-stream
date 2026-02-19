@@ -1,4 +1,3 @@
-type OHLCData = [number, number, number, number, number];
 
 interface NextPageProps {
   params: Promise<{ [key: string]: string }>;
@@ -137,23 +136,7 @@ interface PriceData {
   usd: number;
 }
 
-interface Trade {
-  price?: number;
-  timestamp?: number;
-  type?: string;
-  amount?: number;
-  value?: number;
-}
 
-interface ExtendedPriceData {
-  usd: number;
-  coin?: string;
-  price?: number;
-  change24h?: number;
-  marketCap?: number;
-  volume24h?: number;
-  timestamp?: number;
-}
 
 interface UseBinanceWebSocketProps {
   symbol: string; // Trading pair symbol (e.g., 'btcusdt', 'ethusdt')
