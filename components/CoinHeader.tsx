@@ -3,37 +3,46 @@ import { TrendingDown, TrendingUp } from "lucide-react";
 import Image from 'next/image';
 import { Badge } from "./ui/badge";
 
-const CoinHeader = ({ 
+type Trend = 'up' | 'down' | 'neutral';
+
+const getTrend = (value: number | null | undefined): Trend => {
+  if (value == null) return 'neutral';
+  if (value > 0) return 'up';
+  if (value < 0) return 'down';
+  return 'neutral';
+};
+
+const CoinHeader = ({
   livePriceChangePercentage24h,
   priceChangePercentage30d,
   name,
   image,
   livePrice,
   priceChange24h
- }: LiveCoinHeaderProps) => {
-  const isTrendingUp = livePriceChangePercentage24h > 0;
-  const isThirtyDayUp = priceChangePercentage30d > 0;
-  const isPriceChangeUp = priceChange24h > 0;
+}: LiveCoinHeaderProps) => {
+  const trendToday = getTrend(livePriceChangePercentage24h);
+  const trend30d = getTrend(priceChangePercentage30d);
+  const trendPriceChange = getTrend(priceChange24h);
 
   const stats = [
     {
       label: 'Today',
       value: livePriceChangePercentage24h,
-      isUp: isTrendingUp,
+      trend: trendToday,
       formatter: formatPercentage,
       showIcon: true,
     },
     {
       label: '30 Days',
       value: priceChangePercentage30d,
-      isUp: isThirtyDayUp,
+      trend: trend30d,
       formatter: formatPercentage,
       showIcon: true,
     },
     {
       label: 'Price Change (24h)',
       value: priceChange24h,
-      isUp: isPriceChangeUp,
+      trend: trendPriceChange,
       formatter: formatCurrency,
       showIcon: false,
     },
@@ -48,9 +57,9 @@ const CoinHeader = ({
 
         <div className="price-row">
           <h1>{formatCurrency(livePrice)}</h1>
-          <Badge className={cn('badge', isTrendingUp ? 'badge-up' : 'badge-down')}>
+          <Badge className={cn('badge', trendToday === 'up' ? 'badge-up' : trendToday === 'down' ? 'badge-down' : 'badge-neutral')}>
             {formatPercentage(livePriceChangePercentage24h)}
-            {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
+            {trendToday === 'down' ? <TrendingDown /> : <TrendingUp />}
             (24h)
           </Badge>
         </div>
@@ -63,13 +72,13 @@ const CoinHeader = ({
 
             <div
               className={cn('value', {
-                'text-green-500': stat.isUp,
-                'text-red-500': !stat.isUp,
+                'text-green-500': stat.trend === 'up',
+                'text-red-500': stat.trend === 'down',
               })}
             >
               <p>{stat.formatter(stat.value)}</p>
-              {stat.showIcon &&
-                (stat.isUp ? (
+              {stat.showIcon && stat.trend !== 'neutral' &&
+                (stat.trend === 'up' ? (
                   <TrendingUp width={16} height={16} />
                 ) : (
                   <TrendingDown width={16} height={16} />
