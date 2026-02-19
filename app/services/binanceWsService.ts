@@ -85,7 +85,7 @@ class BinanceWSService {
             });
             break;
 
-          case "kline":
+          case "kline": {
             const k = data.k;
             this.emit("kline", [
               Math.floor(k.t / 1000),
@@ -95,6 +95,7 @@ class BinanceWSService {
               parseFloat(k.c),
             ]);
             break;
+          }
         }
       } catch (err) {
         if (process.env.NODE_ENV === "development") {
@@ -147,11 +148,10 @@ class BinanceWSService {
     }
   }
 
-  // ✅ FIXED: Proper narrowing using switch
   subscribe<K extends keyof Streams>(
     type: K,
     listener: Listener<Streams[K]>
-  ) {
+  ): () => boolean {
     switch (type) {
       case "price":
         this.listeners.price.add(listener as Listener<Streams["price"]>);
@@ -173,6 +173,11 @@ class BinanceWSService {
           this.listeners.kline.delete(
             listener as Listener<Streams["kline"]>
           );
+
+      default: {
+        const _exhaustive: never = type;
+        throw new Error(`Unknown stream type: ${_exhaustive}`);
+      }
     }
   }
 
