@@ -1,20 +1,22 @@
-type OHLCData = [number, number, number, number, number];
 
 interface NextPageProps {
   params: Promise<{ [key: string]: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+type BinanceKlineInterval = '1s' | '1m' | '3m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w' | '1M';
+
 interface CandlestickChartProps {
   data?: OHLCData[];
   liveOhlcv?: OHLCData | null;
   coinId: string;
+  binanceSymbol?: string;
   height?: number;
   children?: React.ReactNode;
   mode?: 'historical' | 'live';
   initialPeriod?: Period;
-  liveInterval?: '1s' | '1m';
-  setLiveInterval?: (interval: '1s' | '1m') => void;
+  klineInterval?: BinanceKlineInterval;
+  onKlineIntervalChange?: (interval: BinanceKlineInterval) => void;
 }
 
 interface ConverterProps {
@@ -134,23 +136,39 @@ interface PriceData {
   usd: number;
 }
 
-interface Trade {
-  price?: number;
-  timestamp?: number;
-  type?: string;
-  amount?: number;
-  value?: number;
+
+
+interface UseBinanceWebSocketProps {
+  symbol: string; // Trading pair symbol (e.g., 'btcusdt', 'ethusdt')
+  interval?: BinanceKlineInterval;
+}
+
+interface UseBinanceWebSocketReturn {
+  price: ExtendedPriceData | null;
+  trades: Trade[];
+  ohlcv: OHLCData | null;
+  isConnected: boolean;
 }
 
 interface ExtendedPriceData {
   usd: number;
-  coin?: string;
-  price?: number;
-  change24h?: number;
-  marketCap?: number;
-  volume24h?: number;
-  timestamp?: number;
+  coin: string;
+  price: number;
+  change24h: number;
+  marketCap: number;
+  volume24h: number;
+  timestamp: number;
 }
+
+interface Trade {
+  price: number;
+  value: number;
+  timestamp: number;
+  type: 'buy' | 'sell';
+  amount: number;
+}
+
+type OHLCData = [number, number, number, number, number];
 
 interface WebSocketMessage {
   type?: string;
@@ -224,7 +242,7 @@ interface CoinDetailsData {
 
 interface LiveDataProps {
   coinId: string;
-  poolId: string;
+  poolId?: string;
   coin: CoinDetailsData;
   coinOHLCData?: OHLCData[];
   children?: React.ReactNode;

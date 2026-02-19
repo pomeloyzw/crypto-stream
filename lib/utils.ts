@@ -72,12 +72,13 @@ export function formatPercentage(change: number | null | undefined, decimalPlace
   })();
 
   if (change === null || change === undefined || isNaN(change)) {
-    return `${(0).toFixed(clamped)}%`;
+    return "-%";
   }
 
   const formattedChange = change.toFixed(clamped);
   return `${formattedChange}%`;
 }
+
 
 export function trendingClasses(value: number) {
   const isTrendingUp = value > 0;

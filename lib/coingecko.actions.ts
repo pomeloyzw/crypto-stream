@@ -39,7 +39,7 @@ export async function coingeckoFetcher<T>(
   } finally {
     clearTimeout(timeout);
   }
-  console.debug(res)
+
   if (!res.ok) {
     // Try to parse JSON error body, otherwise fall back to text for clearer errors
     const parsed = await res.text().catch(() => "");
@@ -54,4 +54,35 @@ export async function coingeckoFetcher<T>(
   }
 
   return res.json();
+}
+
+export async function getPools(
+  id: string,
+  network?: string | null,
+  contractAddress?: string | null
+): Promise<PoolData> {
+  const fallback: PoolData = {
+    id: "",
+    name: "",
+    address: "",
+    network: "",
+  };
+
+  if (network && contractAddress) {
+    try {
+      const poolData = await coingeckoFetcher<{ data: PoolData[] }>(
+        `/onchain/networks/${network}/tokens/${contractAddress}/pools`);
+      return poolData.data?.[0] ?? fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  try {
+    const poolData = await coingeckoFetcher<{ data: PoolData[] }>(
+      `/onchain/search/pools`, { query: id });
+    return poolData.data?.[0] ?? fallback;
+  } catch {
+    return fallback;
+  }
 }
