@@ -17,6 +17,7 @@ export const useBinanceWebSocket = ({
 
     // Clear stale candle data from previous interval/symbol
     setOhlcv(null);
+    setTrades([]);
 
     binanceWSService.connect(symbol, interval);
     setIsConnected(true);
