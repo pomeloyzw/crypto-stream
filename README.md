@@ -1,38 +1,69 @@
-# crypto-pulse
-A real-time crypto analytics terminal powered by the CoinGecko API REST endpoints and Binance (free alternative) WebSocket API.
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crypto Pulse
+
+A real-time crypto analytics terminal powered by the CoinGecko API (REST) and Binance WebSocket API. This application provides up-to-the-second market data, interactive candlestick charts, and detailed token information.
+
+## Features
+
+- **Real-time Market Data**: Live price updates via Binance WebSockets.
+- **Interactive Charts**: TradingView-style candlestick charts.
+- **Token Analytics**: Detailed token metrics including market cap, volume, and supply.
+- **Search**: Efficient token search functionality.
+- **Responsive Design**: Optimized for both desktop and mobile devices.
+
+## Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **UI Components**: Radix UI, Lucide React
+- **Charting**: Lightweight Charts
+- **Data Fetching**: Native Fetch API & WebSockets
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd crypto-pulse
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+### Environment Setup
+
+Create a `.env.local` file in the root directory and add the following variables:
+
+```env
+# CoinGecko API Configuration
+COINGECKO_API_URL=https://api.coingecko.com/api/v3
+COINGECKO_API_KEY=your_coingecko_api_key
+COINGECKO_API_KEY_HEADER=x-cg-demo-api-key # or x-cg-pro-api-key
+
+# Binance API Configuration
+BINANCE_API_URL=https://api.binance.com/api/v3
+NEXT_PUBLIC_BINANCE_WS_URL=wss://stream.binance.com:9443
+```
+
+> **Note:** `COINGECKO_API_KEY` is required. You can get a free key from the CoinGecko Developer Portal.
+
+### Running the App
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
