@@ -20,7 +20,6 @@ export const useBinanceWebSocket = ({
     setTrades([]);
 
     binanceWSService.connect(symbol, interval);
-    setIsConnected(true);
 
     const unsubPrice = binanceWSService.subscribe("price", (data) => {
       setPrice(data);
@@ -34,12 +33,16 @@ export const useBinanceWebSocket = ({
       setOhlcv(kline);
     });
 
+    const unsubConnection = binanceWSService.subscribe("connection", (connected) => {
+      setIsConnected(connected);
+    });
+
     return () => {
       unsubPrice();
       unsubTrade();
       unsubKline();
+      unsubConnection();
       binanceWSService.disconnect();
-      setIsConnected(false);
     };
   }, [symbol, interval]);
 

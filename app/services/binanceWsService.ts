@@ -4,6 +4,7 @@ type Streams = {
   price: ExtendedPriceData;
   trade: Trade;
   kline: OHLCData;
+  connection: boolean;
 };
 
 class BinanceWSService {
@@ -13,6 +14,7 @@ class BinanceWSService {
     price: new Set<Listener<Streams["price"]>>(),
     trade: new Set<Listener<Streams["trade"]>>(),
     kline: new Set<Listener<Streams["kline"]>>(),
+    connection: new Set<Listener<Streams["connection"]>>(),
   };
 
   private reconnectAttempts = 0;
@@ -60,6 +62,7 @@ class BinanceWSService {
 
     this.ws.onopen = () => {
       this.reconnectAttempts = 0;
+      this.emit("connection", true);
     };
 
     this.ws.onmessage = (event) => {
@@ -112,6 +115,7 @@ class BinanceWSService {
 
     this.ws.onclose = () => {
       this.ws = null;
+      this.emit("connection", false);
       this.tryReconnect();
     };
 
@@ -180,6 +184,13 @@ class BinanceWSService {
             listener as Listener<Streams["kline"]>
           );
 
+      case "connection":
+        this.listeners.connection.add(listener as Listener<Streams["connection"]>);
+        return () =>
+          this.listeners.connection.delete(
+            listener as Listener<Streams["connection"]>
+          );
+
       default: {
         const _exhaustive: never = type;
         throw new Error(`Unknown stream type: ${_exhaustive}`);
@@ -197,6 +208,9 @@ class BinanceWSService {
         break;
       case "kline":
         this.listeners.kline.forEach((l) => l(data as Streams["kline"]));
+        break;
+      case "connection":
+        this.listeners.connection.forEach((l) => l(data as Streams["connection"]));
         break;
     }
   }
