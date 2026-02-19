@@ -17,11 +17,16 @@ export async function fetchBinanceKlines(
 ): Promise<OHLCData[]> {
   const url = `${BINANCE_API_URL}/klines?symbol=${symbol.toUpperCase()}&interval=${interval}&limit=${limit}`;
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+
   let response: Response;
   try {
-    response = await fetch(url);
+    response = await fetch(url, { signal: controller.signal });
   } catch (err) {
     throw new Error(`Binance API request failed: ${err instanceof Error ? err.message : err}`);
+  } finally {
+    clearTimeout(timeout);
   }
 
   if (!response.ok) {
