@@ -39,7 +39,7 @@ export async function coingeckoFetcher<T>(
   } finally {
     clearTimeout(timeout);
   }
-  console.debug(res)
+
   if (!res.ok) {
     // Try to parse JSON error body, otherwise fall back to text for clearer errors
     const parsed = await res.text().catch(() => "");
@@ -82,10 +82,7 @@ export async function getPools(
     const poolData = await coingeckoFetcher<{ data: PoolData[] }>(
       `/onchain/search/pools`, { query: id });
     return poolData.data?.[0] ?? fallback;
-  } catch (error) {
+  } catch {
     return fallback;
   }
-
-  return fallback;
-
 }
