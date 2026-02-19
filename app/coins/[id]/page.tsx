@@ -27,6 +27,9 @@ const page = async ({ params }: NextPageProps) => {
 
   const pool = await getPools(id, network, contractAddress);
 
+  const isValidUrl = (url: string | undefined | null): url is string =>
+    typeof url === 'string' && url.trim().length > 0 && /^https?:\/\//i.test(url.trim());
+
   const coinDetails = [
     {
       label: "Market Cap",
@@ -43,19 +46,19 @@ const page = async ({ params }: NextPageProps) => {
     {
       label: "Website",
       value: "-",
-      link: coinData.links.homepage[0],
+      link: isValidUrl(coinData.links.homepage[0]) ? coinData.links.homepage[0] : undefined,
       linkText: "Homepage",
     },
     {
       label: "Explorer",
       value: "-",
-      link: coinData.links.blockchain_site[0],
+      link: isValidUrl(coinData.links.blockchain_site[0]) ? coinData.links.blockchain_site[0] : undefined,
       linkText: "Explorer",
     },
     {
       label: "Community",
       value: "-",
-      link: coinData.links.subreddit_url,
+      link: isValidUrl(coinData.links.subreddit_url) ? coinData.links.subreddit_url : undefined,
       linkText: "Community",
     },
   ];
