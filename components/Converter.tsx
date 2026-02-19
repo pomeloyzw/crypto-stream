@@ -19,7 +19,7 @@ const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
   const [currency, setCurrency] = useState('usd');
   const [amount, setAmount] = useState('10');
 
-  const convertedPrice = (parseFloat(amount) || 0) * (priceList[currency] || 0);
+  const convertedPrice = Math.max(0, parseFloat(amount) || 0) * (priceList[currency] || 0);
 
   return (
     <div id="converter">
@@ -29,6 +29,7 @@ const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
         <div className="input-wrapper">
           <Input
             type="number"
+            min="0"
             placeholder="Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
