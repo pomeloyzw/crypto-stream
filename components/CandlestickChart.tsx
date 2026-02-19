@@ -146,7 +146,7 @@ const CandlestickChart = ({
     chartRef.current?.applyOptions({
       timeScale: { timeVisible: showTime, secondsVisible: false },
     });
-  }, [period]);
+  }, [period, mode]);
 
   // Effect for historical data changes — full chart rebuild
   useEffect(() => {
