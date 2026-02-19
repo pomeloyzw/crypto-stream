@@ -5,16 +5,19 @@ interface NextPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+type BinanceKlineInterval = '1s' | '1m' | '3m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w' | '1M';
+
 interface CandlestickChartProps {
   data?: OHLCData[];
   liveOhlcv?: OHLCData | null;
   coinId: string;
+  binanceSymbol?: string;
   height?: number;
   children?: React.ReactNode;
   mode?: 'historical' | 'live';
   initialPeriod?: Period;
-  liveInterval?: '1s' | '1m';
-  setLiveInterval?: (interval: '1s' | '1m') => void;
+  klineInterval?: BinanceKlineInterval;
+  onKlineIntervalChange?: (interval: BinanceKlineInterval) => void;
 }
 
 interface ConverterProps {
@@ -154,7 +157,7 @@ interface ExtendedPriceData {
 
 interface UseBinanceWebSocketProps {
   symbol: string; // Trading pair symbol (e.g., 'btcusdt', 'ethusdt')
-  interval?: '1s' | '1m' | '3m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w' | '1M';
+  interval?: BinanceKlineInterval;
 }
 
 interface UseBinanceWebSocketReturn {

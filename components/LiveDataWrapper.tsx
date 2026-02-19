@@ -9,14 +9,14 @@ import { useState } from "react";
 import CoinHeader from "./CoinHeader";
 
 const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveDataProps) => {
-  const [liveInterval, setLiveInterval] = useState<"1s" | "1m">("1s");
+  const [klineInterval, setKlineInterval] = useState<BinanceKlineInterval>('30m');
 
   // Convert coin symbol to Binance format (e.g., 'btc' -> 'btcusdt')
   const binanceSymbol = `${coin.symbol.toLowerCase()}usdt`;
 
   const { trades, ohlcv, price } = useBinanceWebSocket({
     symbol: binanceSymbol,
-    interval: liveInterval,
+    interval: klineInterval,
   });
 
   const tradeColumns: DataTableColumn<Trade>[] = [
@@ -53,11 +53,11 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
 
   return (
     <section id="live-data-wrapper">
-      <CoinHeader 
+      <CoinHeader
         name={coin.name}
         image={coin.image.large}
         livePrice={price?.usd ?? coin.market_data.current_price.usd}
-        livePriceChangePercentage24h={price?.change24h ?? 
+        livePriceChangePercentage24h={price?.change24h ??
           coin.market_data.price_change_percentage_24h_in_currency.usd}
         priceChangePercentage30d={coin.market_data.price_change_percentage_30d_in_currency.usd}
         priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
@@ -67,12 +67,12 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
       <div className="trend">
         <CandlestickChart
           coinId={coinId}
+          binanceSymbol={binanceSymbol}
           data={coinOHLCData}
           liveOhlcv={ohlcv}
           mode="live"
-          initialPeriod="daily"
-          liveInterval={liveInterval}
-          setLiveInterval={setLiveInterval}
+          klineInterval={klineInterval}
+          onKlineIntervalChange={setKlineInterval}
         >
           <h4>Trend Overview</h4>
         </CandlestickChart>

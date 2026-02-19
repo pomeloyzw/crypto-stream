@@ -114,7 +114,21 @@ export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
   { value: 'max', label: 'Max' },
 ];
 
-export const LIVE_INTERVAL_BUTTONS: { value: '1s' | '1m'; label: string }[] = [
-  { value: '1s', label: '1s' },
+export const KLINE_INTERVAL_BUTTONS: { value: BinanceKlineInterval; label: string }[] = [
   { value: '1m', label: '1m' },
+  { value: '15m', label: '15m' },
+  { value: '30m', label: '30m' },
+  { value: '1h', label: '1h' },
+  { value: '4h', label: '4h' },
 ];
+
+// Maps each chart period to the Binance kline interval and candle count
+export const PERIOD_TO_KLINE_INTERVAL: Record<Period, { interval: BinanceKlineInterval; limit: number }> = {
+  daily: { interval: '30m', limit: 48 },    // 1D  → 30-minute candles
+  weekly: { interval: '4h', limit: 42 },    // 1W  → 4-hour candles
+  monthly: { interval: '8h', limit: 90 },   // 1M  → 8-hour candles
+  '3months': { interval: '1d', limit: 90 }, // 3M  → 1-day candles
+  '6months': { interval: '3d', limit: 60 }, // 6M  → 3-day candles
+  yearly: { interval: '1w', limit: 52 },    // 1Y  → 1-week candles
+  max: { interval: '1M', limit: 120 },      // Max → 1-month candles
+};
