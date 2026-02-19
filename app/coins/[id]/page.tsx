@@ -87,7 +87,7 @@ const page = async ({ params }: NextPageProps) => {
           <ul className="details-grid">
             {coinDetails.map(({ label, value, link, linkText }, index) => (
               <li key={index}>
-                <span className={label}>{label}</span>
+                <span className="label">{label}</span>
                 {link ? (
                   <div className="link">
                     <Link href={link} target="_blank">
