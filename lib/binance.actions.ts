@@ -2,6 +2,10 @@
 
 const BINANCE_API_URL = process.env.BINANCE_API_URL;
 
+if (!BINANCE_API_URL) {
+  throw new Error("Missing BINANCE_API_URL environment variable");
+}
+
 /**
  * Fetch historical kline (candlestick) data from Binance REST API.
  * Returns data in the same OHLCData format: [timestamp_seconds, open, high, low, close]
@@ -13,7 +17,12 @@ export async function fetchBinanceKlines(
 ): Promise<OHLCData[]> {
   const url = `${BINANCE_API_URL}/klines?symbol=${symbol.toUpperCase()}&interval=${interval}&limit=${limit}`;
 
-  const response = await fetch(url);
+  let response: Response;
+  try {
+    response = await fetch(url);
+  } catch (err) {
+    throw new Error(`Binance API request failed: ${err instanceof Error ? err.message : err}`);
+  }
 
   if (!response.ok) {
     throw new Error(`Binance API error: ${response.status} ${response.statusText}`);
