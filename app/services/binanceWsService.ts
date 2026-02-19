@@ -42,13 +42,19 @@ class BinanceWSService {
 
     this.currentConfig = { symbol: normalized, interval };
 
+    const wsBase = process.env.NEXT_PUBLIC_BINANCE_WS_URL;
+    if (!wsBase) {
+      console.error("NEXT_PUBLIC_BINANCE_WS_URL is not set — skipping WebSocket connection");
+      return;
+    }
+
     const streams = [
       `${normalized}@ticker`,
       `${normalized}@trade`,
       `${normalized}@kline_${interval}`,
     ];
 
-    const url = `${process.env.NEXT_PUBLIC_BINANCE_WS_URL}/stream?streams=${streams.join("/")}`;
+    const url = `${wsBase}/stream?streams=${streams.join("/")}`;
 
     this.ws = new WebSocket(url);
 
