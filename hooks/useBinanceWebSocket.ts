@@ -10,6 +10,7 @@ export const useBinanceWebSocket = ({
   const [price, setPrice] = useState<ExtendedPriceData | null>(null);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [ohlcv, setOhlcv] = useState<OHLCData | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     if (!symbol) return;
@@ -18,6 +19,7 @@ export const useBinanceWebSocket = ({
     setOhlcv(null);
 
     binanceWSService.connect(symbol, interval);
+    setIsConnected(true);
 
     const unsubPrice = binanceWSService.subscribe("price", (data) => {
       setPrice(data);
@@ -35,6 +37,8 @@ export const useBinanceWebSocket = ({
       unsubPrice();
       unsubTrade();
       unsubKline();
+      binanceWSService.disconnect();
+      setIsConnected(false);
     };
   }, [symbol, interval]);
 
@@ -42,6 +46,6 @@ export const useBinanceWebSocket = ({
     price,
     trades,
     ohlcv,
-    isConnected: true, // can be enhanced
+    isConnected,
   };
 };
