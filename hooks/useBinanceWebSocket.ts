@@ -1,7 +1,7 @@
 import { binanceWSService } from "@/app/services/binanceWsService";
 import { useEffect, useState } from "react";
 
-const MAX_TRADES = 20;
+const MAX_TRADES = 10;
 
 export const useBinanceWebSocket = ({
   symbol,
