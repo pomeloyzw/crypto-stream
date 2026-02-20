@@ -1,0 +1,45 @@
+/* Command Palette Styles */
+[cmdk-root] {
+  top: 20%;
+}
+
+[cmdk-input] {
+  border: none;
+  width: 100%;
+  font-size: 1rem;
+  padding: 1rem;
+  outline: none;
+  background: transparent;
+  color: var(--foreground);
+}
+
+[cmdk-item] {
+  content-visibility: auto;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+  padding: 0.5rem 0.75rem;
+  user-select: none;
+  will-change: background, color;
+  transition: all 150ms ease;
+  color: var(--purple-100);
+}
+
+[cmdk-item][data-selected='true'] {
+  background: var(--dark-400);
+  color: #fff;
+}
+
+[cmdk-item][data-disabled='true'] {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+}
+
+[cmdk-group-heading] {
+  user-select: none;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  padding: 0 8px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
