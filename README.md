@@ -1,4 +1,4 @@
-# Crypto Pulse
+# CryptoStream Dashboard
 
 A real-time crypto analytics terminal powered by the CoinGecko API (REST) and Binance WebSocket API. This application provides up-to-the-second market data, interactive candlestick charts, and detailed token information.
 
@@ -31,7 +31,7 @@ A real-time crypto analytics terminal powered by the CoinGecko API (REST) and Bi
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd crypto-pulse
+   cd crypto-stream
    ```
 
 2. Install dependencies:
