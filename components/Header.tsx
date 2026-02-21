@@ -29,7 +29,7 @@ const Header = () => {
 					>
 						<span className="pointer-events-none">Search coins...</span>
 						<kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-purple-100 opacity-100">
-							<span className="text-xs">⌘</span>K
+							<span className="text-xs">{typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'}</span>K
 						</kbd>
 					</button>
 
