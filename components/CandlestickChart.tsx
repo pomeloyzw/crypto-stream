@@ -98,8 +98,8 @@ const CandlestickChart = ({
     if (onKlineIntervalChange) {
       onKlineIntervalChange(PERIOD_TO_KLINE_INTERVAL[initialPeriod ?? 'daily'].interval);
     }
-    // Fetch initial data from Binance in live mode
-    if (mode === 'live' && binanceSymbol) {
+    // Fetch initial data in live mode (will use Binance or CoinGecko based on binanceSymbol support)
+    if (mode === 'live') {
       fetchOHLCData(initialPeriod ?? 'daily');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,7 +118,8 @@ const CandlestickChart = ({
     const series = chart.addSeries(CandlestickSeries, getCandlestickConfig());
 
     // Binance data is already in seconds; CoinGecko data is in milliseconds
-    const toSeconds = (ts: number) => mode === 'live' ? ts : Math.floor(ts / 1000);
+    // Graceful fallback for dynamic data souring: determine if ms or s based on size
+    const toSeconds = (ts: number) => ts > 1e11 ? Math.floor(ts / 1000) : ts;
     const convertedToSeconds = ohlcDataRef.current.map(
       (item) => [toSeconds(item[0]), item[1], item[2], item[3], item[4]] as OHLCData
     );
@@ -158,7 +159,8 @@ const CandlestickChart = ({
     if (!candleSeriesRef.current) return;
 
     // Binance data is already in seconds; CoinGecko data is in milliseconds
-    const toSeconds = (ts: number) => mode === 'live' ? ts : Math.floor(ts / 1000);
+    // Graceful fallback for dynamic data souring: determine if ms or s based on size
+    const toSeconds = (ts: number) => ts > 1e11 ? Math.floor(ts / 1000) : ts;
     const convertedToSeconds = ohlcData.map(
       (item) => [toSeconds(item[0]), item[1], item[2], item[3], item[4]] as OHLCData
     );
