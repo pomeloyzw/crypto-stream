@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Command } from 'cmdk';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandLoading } from 'cmdk';
 import { Search } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { searchCoins } from '@/lib/coingecko.actions';
@@ -31,6 +31,8 @@ const CommandMenu = () => {
       }
       if (e.key === 'Escape') {
         setOpen(false);
+        setResults([]);
+        setQuery('');
       }
     };
 
@@ -70,6 +72,8 @@ const CommandMenu = () => {
 
   const runCommand = useCallback((command: () => unknown) => {
     setOpen(false);
+    setResults([]);
+    setQuery('');
     command();
   }, []);
 
@@ -82,7 +86,7 @@ const CommandMenu = () => {
         <Command className="flex h-full w-full flex-col overflow-hidden rounded-xl bg-transparent text-white">
           <div className="flex items-center border-b border-white/10 px-3" cmdk-input-wrapper="">
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-            <Command.Input
+            <CommandInput
               autoFocus
               placeholder="Search coins..."
               value={query}
@@ -90,15 +94,18 @@ const CommandMenu = () => {
               className="flex h-12 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
-          <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden p-2">
-            <Command.Empty className="py-6 text-center text-sm text-gray-500">
-              {loading ? 'Searching...' : 'No results found.'}
-            </Command.Empty>
+          <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden p-2">
+            {loading && <CommandLoading className="py-6 text-center text-sm text-gray-500">Searching...</CommandLoading>}
+            {!loading && results.length === 0 && (
+              <CommandEmpty className="py-6 text-center text-sm text-gray-500">
+                No results found.
+              </CommandEmpty>
+            )}
 
             {query ? (
-              <Command.Group heading="Search Results" className="overflow-hidden p-1 text-gray-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-500">
+              <CommandGroup heading="Search Results" className="overflow-hidden p-1 text-gray-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-500">
                 {results.map((coin) => (
-                  <Command.Item
+                  <CommandItem
                     key={coin.id}
                     value={coin.id}
                     onSelect={() => {
@@ -109,13 +116,13 @@ const CommandMenu = () => {
                     <img src={coin.thumb} alt={coin.name} className="mr-2 h-5 w-5 rounded-full" />
                     <span className="font-medium text-white">{coin.name}</span>
                     <span className="ml-2 text-gray-500">{coin.symbol}</span>
-                  </Command.Item>
+                  </CommandItem>
                 ))}
-              </Command.Group>
+              </CommandGroup>
             ) : (
-              <Command.Group heading="Suggestions" className="overflow-hidden p-1 text-gray-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-500">
+              <CommandGroup heading="Suggestions" className="overflow-hidden p-1 text-gray-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-500">
                 {suggestedCoins.map((coin) => (
-                  <Command.Item
+                  <CommandItem
                     key={coin.id}
                     value={coin.id}
                     onSelect={() => {
@@ -125,27 +132,27 @@ const CommandMenu = () => {
                   >
                     <span className="font-medium text-white">{coin.name}</span>
                     <span className="ml-2 text-gray-500">{coin.symbol}</span>
-                  </Command.Item>
+                  </CommandItem>
                 ))}
-              </Command.Group>
+              </CommandGroup>
             )}
-            <Command.Group heading="Navigation" className="overflow-hidden p-1 text-gray-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-500">
-              <Command.Item
+            <CommandGroup heading="Navigation" className="overflow-hidden p-1 text-gray-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-500">
+              <CommandItem
                 value="home"
                 onSelect={() => runCommand(() => router.push('/'))}
                 className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-white/10 aria-selected:text-white"
               >
                 <span>Home</span>
-              </Command.Item>
-              <Command.Item
+              </CommandItem>
+              <CommandItem
                 value="all-coins"
                 onSelect={() => runCommand(() => router.push('/coins'))}
                 className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-white/10 aria-selected:text-white"
               >
                 <span>All Coins</span>
-              </Command.Item>
-            </Command.Group>
-          </Command.List>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
         </Command>
       </div>
     </div>
