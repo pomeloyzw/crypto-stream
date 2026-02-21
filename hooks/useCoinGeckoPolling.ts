@@ -60,8 +60,8 @@ export const useCoinGeckoPolling = ({
               usd: p,
               coin: coinId,
               price: p,
-              change24h: 0, 
-              marketCap: 0,
+              change24h: null, 
+              marketCap: null,
               volume24h: v || 0,
               timestamp: new Date().getTime(),
             });
