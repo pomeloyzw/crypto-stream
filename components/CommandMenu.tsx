@@ -48,6 +48,7 @@ const CommandMenu = () => {
 
     const fetchResults = async () => {
       setLoading(true);
+      setResults([]);
       try {
         const coins = await searchCoins(debouncedQuery);
         setResults(coins.slice(0, 5));
