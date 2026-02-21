@@ -29,6 +29,9 @@ const CommandMenu = () => {
         e.preventDefault();
         setOpen((open) => !open);
       }
+      if (e.key === 'Escape') {
+        setOpen(false);
+      }
     };
 
     document.addEventListener('keydown', down);
