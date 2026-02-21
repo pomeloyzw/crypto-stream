@@ -66,12 +66,15 @@ export const useCoinGeckoPolling = ({
               timestamp: new Date().getTime(),
             });
 
+            // Generate synthetic fake trade as fallback for recent trades since CoinGecko does not
+            // offer a free real-time trades stream endpoint.
             const fakeTrade: Trade = {
               price: p,
               amount: v > 0 ? v / 1000 : 0.1,
               value: p * (v > 0 ? v / 1000 : 0.1),
               type: Math.random() > 0.5 ? "buy" : "sell",
               timestamp: bestTicker.timestamp ? new Date(bestTicker.timestamp).getTime() : new Date().getTime(),
+              isSynthetic: true,
             };
 
             setTrades((prev) => [fakeTrade, ...prev].slice(0, 10));

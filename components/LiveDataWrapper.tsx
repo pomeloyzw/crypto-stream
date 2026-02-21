@@ -57,6 +57,7 @@ const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
       cell: (trade) => (
         <span className={trade.type === 'buy' ? 'text-green-500' : 'text-red-500'}>
           {trade.type === 'buy' ? 'Buy' : 'Sell'}
+          {trade.isSynthetic && <span className="ml-1 text-[10px] text-muted-foreground opacity-70">(Synthetic)</span>}
         </span>
       ),
     },

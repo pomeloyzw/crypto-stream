@@ -166,6 +166,7 @@ interface Trade {
   timestamp: number;
   type: 'buy' | 'sell';
   amount: number;
+  isSynthetic?: boolean;
 }
 
 type OHLCData = [number, number, number, number, number];
