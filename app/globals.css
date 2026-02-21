@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './cmdk.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -145,6 +146,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-dark-700 text-foreground;
   }
@@ -164,11 +166,11 @@
   }
 
   .badge-up {
-    @apply bg-green-600/20! text-green-600!;
+    @apply !bg-green-600/20 !text-green-600;
   }
 
   .badge-down {
-    @apply bg-red-500/20! text-red-500!;
+    @apply !bg-red-500/20 !text-red-500;
   }
 
   .skeleton {
@@ -586,7 +588,7 @@
       @apply bg-dark-500 rounded-xl max-h-fit overflow-hidden;
 
       .rank-cell {
-        @apply pl-5 max-w-20! py-5 font-medium text-purple-100;
+        @apply pl-5 !max-w-20 py-5 font-medium text-purple-100;
 
         a {
           @apply absolute inset-0 z-10;
@@ -625,7 +627,7 @@
 
   #search-modal {
     .trigger {
-      @apply px-6 hover:bg-transparent! font-medium transition-all h-full cursor-pointer text-base text-purple-100 flex items-center gap-2;
+      @apply px-6 hover:!bg-transparent font-medium transition-all h-full cursor-pointer text-base text-purple-100 flex items-center gap-2;
     }
 
     .kbd {
@@ -633,14 +635,14 @@
     }
 
     .dialog {
-      @apply bg-dark-400! max-w-sm sm:max-w-md md:max-w-2xl mx-auto;
+      @apply !bg-dark-400 max-w-sm sm:max-w-md md:max-w-2xl mx-auto;
     }
 
     .cmd-input {
-      @apply bg-dark-500!;
+      @apply !bg-dark-500;
 
       input {
-        @apply placeholder:text-purple-100!;
+        @apply placeholder:!text-purple-100;
       }
     }
 
@@ -706,7 +708,7 @@
       @apply bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pr-4;
 
       .input {
-        @apply flex-1 text-lg! border-none font-medium bg-dark-400! focus-visible:ring-0 shadow-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+        @apply flex-1 !text-lg border-none font-medium !bg-dark-400 focus-visible:ring-0 shadow-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
       }
 
       .coin-info {
@@ -738,10 +740,10 @@
       }
 
       .select-trigger {
-        @apply w-fit! border-none! cursor-pointer! h-12! bg-dark-400! hover:bg-dark-400! focus-visible:ring-0!;
+        @apply !w-fit !border-none !cursor-pointer !h-12 !bg-dark-400 hover:!bg-dark-400 focus-visible:!ring-0;
 
         .select-value {
-          @apply font-semibold! text-xs! text-purple-100!;
+          @apply !font-semibold !text-xs !text-purple-100;
         }
       }
 
@@ -749,7 +751,7 @@
         @apply bg-dark-400 max-h-125;
 
         .select-item {
-          @apply cursor-pointer hover:bg-dark-500!;
+          @apply cursor-pointer hover:!bg-dark-500;
         }
       }
     }
@@ -759,15 +761,15 @@
     @apply mt-8 w-full;
 
     .tabs-list {
-      @apply size-full! p-1! bg-transparent! border-b! border-dark-500! rounded-none!;
+      @apply !size-full !p-1 !bg-transparent !border-b !border-dark-500 !rounded-none;
     }
 
     .tabs-trigger {
-      @apply data-[state=active]:border-none! data-[state=active]:bg-transparent! flex justify-start! mb-0! py-2! text-lg! font-semibold! md:text-2xl!;
+      @apply data-[state=active]:!border-none data-[state=active]:!bg-transparent flex !justify-start !mb-0 !py-2 !text-lg !font-semibold md:!text-2xl;
     }
 
     .tabs-content {
-      @apply gap-4! mt-2! md:gap-5! sm:grid-cols-2! lg:grid-cols-1! grid!;
+      @apply !gap-4 !mt-2 md:!gap-5 sm:!grid-cols-2 lg:!grid-cols-1 !grid;
     }
   }
 
@@ -868,11 +870,11 @@
       }
 
       .page-link {
-        @apply hover:bg-dark-400! rounded-sm text-base cursor-pointer;
+        @apply hover:!bg-dark-400 rounded-sm text-base cursor-pointer;
       }
 
       .page-link-active {
-        @apply bg-green-500! text-dark-900 font-semibold;
+        @apply !bg-green-500 text-dark-900 font-semibold;
       }
     }
   }
@@ -881,7 +883,7 @@
     @apply size-full xl:col-span-2;
 
     .divider {
-      @apply my-8! bg-purple-600!;
+      @apply !my-8 !bg-purple-600;
     }
 
     .trend {

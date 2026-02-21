@@ -4,16 +4,24 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const Header = () => {
 
 	const pathname = usePathname();
+	const [isMac, setIsMac] = useState(false);
+
+	useEffect(() => {
+		const nav = navigator as Navigator & { userAgentData?: { platform: string } };
+		const platform = nav.userAgentData?.platform || navigator.platform || navigator.userAgent;
+		setIsMac(/Mac|iPhone|iPad/i.test(platform));
+	}, []);
 
 	return (
 		<header>
 			<div className="main-container inner">
 				<Link href="/">
-					<Image src="/logo.svg" alt="CryptoStream logo" width={132} height={40} />
+					<Image src="/logo.svg" alt="CryptoStream logo" width={180} height={54} />
 				</Link>
 
 				<nav>
@@ -22,7 +30,15 @@ const Header = () => {
 						"is-home": true
 					})}>Home</Link>
 
-					<p>Search Modal</p>
+					<button
+						onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+						className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-purple-100 bg-dark-500 hover:bg-dark-400 rounded-lg border border-white/5 transition-colors cursor-pointer pointer-events-auto"
+					>
+						<span className="pointer-events-none">Search coins...</span>
+						<kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-purple-100 opacity-100">
+							<span className="text-xs">{isMac ? '⌘' : 'Ctrl'}</span>K
+						</kbd>
+					</button>
 
 					<Link href="/coins" className={cn("nav-link", {
 						"is-active": pathname === "/coins"

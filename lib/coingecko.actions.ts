@@ -86,3 +86,20 @@ export async function getPools(
     return fallback;
   }
 }
+
+export async function searchCoins(query: string) {
+  if (!query) return [];
+  
+  try {
+    const data = await coingeckoFetcher<{ coins: any[] }>(
+      '/search',
+      { query },
+      60
+    );
+    
+    return data?.coins || [];
+  } catch (error) {
+    console.error('Error searching coins:', error);
+    return [];
+  }
+}
