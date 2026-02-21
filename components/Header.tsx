@@ -12,7 +12,8 @@ const Header = () => {
 	const [isMac, setIsMac] = useState(false);
 
 	useEffect(() => {
-		const platform = (navigator as any).userAgentData?.platform || navigator.platform || navigator.userAgent;
+		const nav = navigator as Navigator & { userAgentData?: { platform: string } };
+		const platform = nav.userAgentData?.platform || navigator.platform || navigator.userAgent;
 		setIsMac(/Mac|iPhone|iPad/i.test(platform));
 	}, []);
 
