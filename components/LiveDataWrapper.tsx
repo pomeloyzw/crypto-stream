@@ -20,6 +20,7 @@ const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
 
   useEffect(() => {
     let isMounted = true;
+    setIsBinanceSupported(null);
     checkBinanceSymbol(binanceSymbol).then(supported => {
       if (isMounted) setIsBinanceSupported(supported);
     });
