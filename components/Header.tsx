@@ -43,6 +43,10 @@ const Header = () => {
 					<Link href="/coins" className={cn("nav-link", {
 						"is-active": pathname === "/coins"
 					})}>All Coins</Link>
+
+					<Link href="/portfolio" className={cn("nav-link", {
+						"is-active": pathname === "/portfolio"
+					})}>Portfolio</Link>
 				</nav>
 			</div>
 		</header>

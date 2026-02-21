@@ -335,3 +335,29 @@ interface PoolData {
   name: string;
   network: string;
 }
+
+interface PortfolioHolding {
+  coinId: string;
+  symbol: string;
+  name: string;
+  amount: number;
+  averageBuyPrice: number;
+}
+
+interface PortfolioTransaction {
+  id: string;
+  type: 'buy' | 'sell';
+  coinId: string;
+  symbol: string;
+  name: string;
+  amount: number;
+  price: number;
+  total: number;
+  date: string;
+}
+
+interface PortfolioState {
+  balance: number;
+  holdings: PortfolioHolding[];
+  history: PortfolioTransaction[];
+}
