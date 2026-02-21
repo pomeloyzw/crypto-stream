@@ -15,6 +15,12 @@ export const useCoinGeckoPolling = ({
 
     let isMounted = true;
 
+    // Clear stale data from previous coinId
+    setPrice(null);
+    setTrades([]);
+    setOhlcv(null);
+    setIsConnected(false);
+
     // Determine days for OHLC based on interval.
     // CoinGecko only supports 1, 7, 14, 30, 90, 180, 365 days.
     // 1 day = 30 min candles. 7 days = 4 hour candles.
