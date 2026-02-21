@@ -86,7 +86,8 @@ export const useCoinGeckoPolling = ({
           setOhlcv(lastCandle);
         }
 
-        setIsConnected(true);
+        const hasData = (ohlcData && ohlcData.length > 0) || (!!tickerData && !!tickerData.tickers && tickerData.tickers.length > 0);
+        setIsConnected(hasData);
       } catch (e) {
         if (isMounted) setIsConnected(false);
       }
