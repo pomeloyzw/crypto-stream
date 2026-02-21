@@ -78,7 +78,7 @@ class BinanceWSService {
               coin: normalized,
               price: parseFloat(data.c),
               change24h: parseFloat(data.P),
-              marketCap: 0,
+              marketCap: null,
               volume24h: parseFloat(data.v),
               timestamp: data.E,
             });

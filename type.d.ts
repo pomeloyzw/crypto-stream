@@ -154,8 +154,8 @@ interface ExtendedPriceData {
   usd: number;
   coin: string;
   price: number;
-  change24h: number;
-  marketCap: number;
+  change24h: number | null;
+  marketCap: number | null;
   volume24h: number;
   timestamp: number;
 }
@@ -166,6 +166,7 @@ interface Trade {
   timestamp: number;
   type: 'buy' | 'sell';
   amount: number;
+  isSynthetic?: boolean;
 }
 
 type OHLCData = [number, number, number, number, number];

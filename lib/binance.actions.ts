@@ -45,3 +45,16 @@ export async function fetchBinanceKlines(
     parseFloat(String(k[4])),         // Close
   ] as OHLCData);
 }
+
+/**
+ * Check if a symbol exists on Binance.
+ */
+export async function checkBinanceSymbol(symbol: string): Promise<boolean> {
+  const url = `${BINANCE_API_URL}/ticker/price?symbol=${symbol.toUpperCase()}`;
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}

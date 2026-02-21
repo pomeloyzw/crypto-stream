@@ -103,3 +103,41 @@ export async function searchCoins(query: string) {
     return [];
   }
 }
+
+export async function fetchCoinGeckoOhlc(coinId: string, days: number = 1): Promise<OHLCData[]> {
+  try {
+    const data = await coingeckoFetcher<any[]>(
+      `/coins/${coinId}/ohlc`,
+      { vs_currency: "usd", days },
+      60
+    );
+
+    if (Array.isArray(data)) {
+      return data.map((k) => [
+        Math.floor(Number(k[0]) / 1000), // ms -> seconds
+        parseFloat(String(k[1])),
+        parseFloat(String(k[2])),
+        parseFloat(String(k[3])),
+        parseFloat(String(k[4])),
+      ] as OHLCData);
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching CoinGecko OHLC:", error);
+    return [];
+  }
+}
+
+export async function fetchCoinGeckoTicker(coinId: string) {
+  try {
+    const data = await coingeckoFetcher<{ tickers: any[] }>(
+      `/coins/${coinId}/tickers`,
+      { include_exchange_logo: "false", page: "1" },
+      10
+    );
+    return data;
+  } catch (error) {
+    console.error("Error fetching CoinGecko Ticker:", error);
+    return null;
+  }
+}
