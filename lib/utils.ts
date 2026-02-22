@@ -1,6 +1,12 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+/**
+ * Combines and merges CSS class name inputs into a single normalized string.
+ *
+ * @param inputs - One or more clsx-compatible class values (strings, arrays, objects) to combine
+ * @returns The resulting class string with Tailwind class conflicts resolved
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -89,6 +95,19 @@ export function trendingClasses(value: number) {
   };
 }
 
+/**
+ * Produces a human-readable relative time string for a given date.
+ *
+ * @param date - A Date object, a numeric timestamp (milliseconds), or a date string parseable by Date.
+ * @returns A string describing the time difference:
+ * - `'invalid date'` if the input cannot be parsed,
+ * - `'just now'` for <60 seconds,
+ * - `'<n> min'` for minutes,
+ * - `'<n> hour'` or `'<n> hours'` for hours,
+ * - `'<n> day'` or `'<n> days'` for days,
+ * - `'<n> week'` or `'<n> weeks'` for weeks (<4 weeks),
+ * - otherwise the date in `YYYY-MM-DD` format.
+ */
 export function timeAgo(date: string | number | Date): string {
   const now = new Date();
   const past = new Date(date);
@@ -111,10 +130,22 @@ export function timeAgo(date: string | number | Date): string {
   return past.toISOString().split('T')[0];
 }
 
+/**
+ * Normalize a numeric timestamp to seconds for use with lightweight-charts.
+ *
+ * @param ts - A timestamp provided in either seconds or milliseconds.
+ * @returns The timestamp expressed in seconds (floored when input was milliseconds). 
+ */
 export function toSeconds(ts: number): import('lightweight-charts').Time {
   return (ts > 1e11 ? Math.floor(ts / 1000) : ts) as import('lightweight-charts').Time;
 }
 
+/**
+ * Converts an array of OHLC tuples into time-series objects suitable for lightweight-charts.
+ *
+ * @param data - Array of OHLC tuples in the form `[timestamp, open, high, low, close]`. `timestamp` may be in milliseconds or seconds.
+ * @returns An array of objects `{ time, open, high, low, close }` where `time` is converted to seconds for lightweight-charts. Consecutive entries with the same `time` are deduplicated, keeping the first occurrence.
+ */
 export function convertOHLCData(data: OHLCData[]) {
   return data
     .map((d) => ({

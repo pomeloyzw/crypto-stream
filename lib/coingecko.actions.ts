@@ -112,6 +112,16 @@ export async function coingeckoFetcher<T>(
   return res.json();
 }
 
+/**
+ * Retrieves pool information for the given identifier, optionally scoped to an on-chain token.
+ *
+ * If both `network` and `contractAddress` are provided, the function attempts to fetch the pool for that on-chain token; otherwise it searches pools by `id`. If no matching pool is found or an error occurs, a fallback `PoolData` with empty fields is returned.
+ *
+ * @param id - Identifier used to search for a pool (e.g., coin or pool id)
+ * @param network - Optional blockchain network identifier to scope the lookup to an on-chain token
+ * @param contractAddress - Optional token contract address to scope the lookup to an on-chain token
+ * @returns The first matching `PoolData` entry, or a fallback `PoolData` with empty `id`, `name`, `address`, and `network` fields if none is found or on error
+ */
 export async function getPools(
   id: string,
   network?: string | null,
@@ -143,6 +153,12 @@ export async function getPools(
   }
 }
 
+/**
+ * Searches CoinGecko for coins matching the provided query.
+ *
+ * @param query - Text to search for (coin id, symbol, or name)
+ * @returns An array of matching CoinGecko search coin results; `[]` if none found or an error occurs
+ */
 export async function searchCoins(query: string): Promise<CoinGeckoSearchCoin[]> {
   if (!query) return [];
   
@@ -160,6 +176,13 @@ export async function searchCoins(query: string): Promise<CoinGeckoSearchCoin[]>
   }
 }
 
+/**
+ * Fetches OHLC (open-high-low-close) data for a CoinGecko coin in USD for the specified number of days.
+ *
+ * @param coinId - CoinGecko coin identifier (e.g., `bitcoin`)
+ * @param days - Number of days of historical data to retrieve (default: 1)
+ * @returns An array of OHLC datapoints where each entry is `[timestampSeconds, open, high, low, close]`
+ */
 export async function fetchCoinGeckoOhlc(coinId: string, days: number = 1): Promise<OHLCData[]> {
   try {
     const data = await coingeckoFetcher<[number, number, number, number, number][]>(
@@ -184,6 +207,12 @@ export async function fetchCoinGeckoOhlc(coinId: string, days: number = 1): Prom
   }
 }
 
+/**
+ * Fetches ticker data for the specified CoinGecko coin identifier.
+ *
+ * @param coinId - CoinGecko coin id (slug) identifying which coin's tickers to retrieve
+ * @returns The coin's tickers response as `CoinGeckoTickersResponse`, or `null` if the request fails
+ */
 export async function fetchCoinGeckoTicker(coinId: string): Promise<CoinGeckoTickersResponse | null> {
   try {
     const data = await coingeckoFetcher<CoinGeckoTickersResponse>(

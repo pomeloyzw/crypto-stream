@@ -7,8 +7,10 @@ if (!BINANCE_API_URL) {
 }
 
 /**
- * Fetch historical kline (candlestick) data from Binance REST API.
- * Returns data in the same OHLCData format: [timestamp_seconds, open, high, low, close]
+ * Fetch historical kline (candlestick) data from Binance in OHLC format.
+ *
+ * @param limit - Maximum number of klines to retrieve (default: 500)
+ * @returns An array of OHLCData tuples: [timestamp_seconds, open, high, low, close]
  */
 export async function fetchBinanceKlines(
   symbol: string,
