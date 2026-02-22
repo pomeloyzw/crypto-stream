@@ -36,6 +36,18 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
       return;
     }
 
+    if (tab === 'buy') {
+      if (parsedAmount * currentPrice > balance) {
+        setError('Insufficient balance');
+        return;
+      }
+    } else {
+      if (parsedAmount > holdingAmount) {
+        setError('Insufficient holding amount');
+        return;
+      }
+    }
+
     try {
       if (tab === 'buy') {
         buyCoin(coinId, symbol, name, parsedAmount, currentPrice);
