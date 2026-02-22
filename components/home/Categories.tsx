@@ -67,7 +67,7 @@ const Categories = async () => {
       <h4>Top Categories</h4>
       <DataTable
         columns={columns}
-        data={categories?.slice(0, 10)}
+        data={categories?.slice(0, 10) ?? []}
         rowKey={(_, index) => index}
         tableClassName="mt-3"
       />
