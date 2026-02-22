@@ -36,11 +36,11 @@ export const usePortfolio = () => {
   const buyCoin = useCallback((coinId: string, symbol: string, name: string, amount: number, price: number) => {
     const total = amount * price;
 
-    setPortfolio((prev) => {
-      if (prev.balance < total) {
-        throw new Error('Insufficient balance');
-      }
+    if (portfolio.balance < total) {
+      throw new Error('Insufficient balance');
+    }
 
+    setPortfolio((prev) => {
       const newBalance = prev.balance - total;
       
       const holdingIndex = prev.holdings.findIndex(h => h.coinId === coinId);
@@ -84,31 +84,34 @@ export const usePortfolio = () => {
         history: [transaction, ...prev.history],
       };
     });
-  }, []);
+  }, [portfolio]);
 
   const sellCoin = useCallback((coinId: string, symbol: string, name: string, amount: number, price: number) => {
     const total = amount * price;
 
-    setPortfolio((prev) => {
-      const holdingIndex = prev.holdings.findIndex(h => h.coinId === coinId);
-      if (holdingIndex === -1) {
-        throw new Error('Holding not found');
-      }
+    const holdingIndex = portfolio.holdings.findIndex(h => h.coinId === coinId);
+    if (holdingIndex === -1) {
+      throw new Error('Holding not found');
+    }
 
-      const existing = prev.holdings[holdingIndex];
-      if (existing.amount < amount) {
-        throw new Error('Insufficient holding amount');
-      }
+    const existing = portfolio.holdings[holdingIndex];
+    if (existing.amount < amount) {
+      throw new Error('Insufficient holding amount');
+    }
+
+    setPortfolio((prev) => {
+      const currentHoldingIndex = prev.holdings.findIndex(h => h.coinId === coinId);
+      const currentExisting = prev.holdings[currentHoldingIndex];
 
       const newBalance = prev.balance + total;
       let newHoldings = [...prev.holdings];
       
-      if (existing.amount === amount) {
+      if (currentExisting.amount === amount) {
         newHoldings = newHoldings.filter(h => h.coinId !== coinId);
       } else {
-        newHoldings[holdingIndex] = {
-          ...existing,
-          amount: existing.amount - amount,
+        newHoldings[currentHoldingIndex] = {
+          ...currentExisting,
+          amount: currentExisting.amount - amount,
         };
       }
 
@@ -130,7 +133,7 @@ export const usePortfolio = () => {
         history: [transaction, ...prev.history],
       };
     });
-  }, []);
+  }, [portfolio]);
 
   const resetPortfolio = useCallback(() => {
     const initial = {
