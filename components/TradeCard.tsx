@@ -126,7 +126,7 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
         </div>
 
         <div className="flex justify-between items-center text-sm border-t border-white/5 pt-3">
-          <span className="text-gray-400">Total Setup Cost</span>
+          <span className="text-gray-400">{tab === 'buy' ? 'Total Cost' : 'Total Proceeds'}</span>
           <span className="font-semibold text-white">
             {formatCurrency((parseFloat(amount) || 0) * currentPrice)}
           </span>
