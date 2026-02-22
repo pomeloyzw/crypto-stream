@@ -93,9 +93,6 @@ const Header = () => {
 							className="flex items-center justify-between w-full px-4 py-4 text-base font-medium text-purple-100 bg-dark-500 hover:bg-dark-400 rounded-xl border border-white/5 transition-colors cursor-pointer"
 						>
 							<span>Search coins...</span>
-							<kbd className="inline-flex h-6 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-2 font-mono text-xs font-medium text-purple-100 opacity-100">
-								<span className="text-sm">{isMac ? '⌘' : 'Ctrl'}</span>K
-							</kbd>
 						</button>
 
 						<div className="flex flex-col gap-2">
