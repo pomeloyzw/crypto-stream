@@ -3,7 +3,7 @@
 import { getCandlestickConfig, getChartConfig, KLINE_INTERVAL_BUTTONS, PERIOD_BUTTONS, PERIOD_CONFIG, PERIOD_TO_KLINE_INTERVAL } from "@/constants";
 import { fetchBinanceKlines } from "@/lib/binance.actions";
 import { coingeckoFetcher } from "@/lib/coingecko.actions";
-import { convertOHLCData } from "@/lib/utils";
+import { convertOHLCData, toSeconds } from "@/lib/utils";
 import { CandlestickSeries, createChart, IChartApi, ISeriesApi } from "lightweight-charts";
 import { useEffect, useRef, useState, useTransition } from "react";
 
@@ -119,9 +119,8 @@ const CandlestickChart = ({
 
     // Binance data is already in seconds; CoinGecko data is in milliseconds
     // Graceful fallback for dynamic data souring: determine if ms or s based on size
-    const toSeconds = (ts: number) => ts > 1e11 ? Math.floor(ts / 1000) : ts;
     const convertedToSeconds = ohlcDataRef.current.map(
-      (item) => [toSeconds(item[0]), item[1], item[2], item[3], item[4]] as OHLCData
+      (item) => [toSeconds(item[0]) as unknown as number, item[1], item[2], item[3], item[4]] as OHLCData
     );
 
     series.setData(convertOHLCData(convertedToSeconds));
@@ -160,9 +159,8 @@ const CandlestickChart = ({
 
     // Binance data is already in seconds; CoinGecko data is in milliseconds
     // Graceful fallback for dynamic data souring: determine if ms or s based on size
-    const toSeconds = (ts: number) => ts > 1e11 ? Math.floor(ts / 1000) : ts;
     const convertedToSeconds = ohlcData.map(
-      (item) => [toSeconds(item[0]), item[1], item[2], item[3], item[4]] as OHLCData
+      (item) => [toSeconds(item[0]) as unknown as number, item[1], item[2], item[3], item[4]] as OHLCData
     );
 
     const converted = convertOHLCData(convertedToSeconds);

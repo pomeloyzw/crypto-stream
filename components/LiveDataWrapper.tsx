@@ -21,7 +21,6 @@ const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
 
   useEffect(() => {
     let isMounted = true;
-    setIsBinanceSupported(null);
     checkBinanceSymbol(binanceSymbol).then(supported => {
       if (isMounted) setIsBinanceSupported(supported);
     });
@@ -71,7 +70,7 @@ const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
   ];
 
   return (
-    <section id="live-data-wrapper">
+    <section className="flex flex-col gap-6">
       <CoinHeader
         name={coin.name}
         image={coin.image.large}
@@ -81,9 +80,9 @@ const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
         priceChangePercentage30d={coin.market_data.price_change_percentage_30d_in_currency.usd}
         priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
       />
-      <Separator className="divider" />
+      <Separator className="bg-white/10" />
 
-      <div className="trend">
+      <div className="flex flex-col gap-2">
         {isBinanceSupported !== null ? (
           <CandlestickChart
             coinId={coinId}
@@ -94,25 +93,29 @@ const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
             klineInterval={klineInterval}
             onKlineIntervalChange={setKlineInterval}
           >
-            <h4>Trend Overview</h4>
+            <h4 className="text-lg font-semibold text-white/90">Trend Overview</h4>
           </CandlestickChart>
         ) : (
-          <div className="flex items-center justify-center h-[360px]">
+          <div className="flex items-center justify-center h-[360px] bg-white/5 rounded-xl border border-white/10">
             <span className="text-muted-foreground text-sm font-medium">Loading chart data...</span>
           </div>
         )}
       </div>
 
-      <Separator className="divider" />
+      <Separator className="bg-white/10" />
 
-      <div className="trades">
-        <h4>Recent Trades</h4>
+      <div className="flex flex-col gap-4">
+        <h4 className="text-lg font-semibold text-white/90">Recent Trades</h4>
 
         <DataTable
           columns={tradeColumns}
           data={trades}
           rowKey={(_, index) => index}
-          tableClassName="trades-table"
+          tableClassName="w-full text-sm text-left border-collapse"
+          headerRowClassName="border-b border-white/10 text-muted-foreground"
+          headerCellClassName="py-3 px-4 font-medium"
+          bodyRowClassName="border-b border-white/5 hover:bg-white/5 transition-colors"
+          bodyCellClassName="py-3 px-4"
         />
       </div>
     </section>

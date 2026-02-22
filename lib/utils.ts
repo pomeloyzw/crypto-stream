@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from 'clsx';
-import type { Time } from 'lightweight-charts';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -112,10 +111,14 @@ export function timeAgo(date: string | number | Date): string {
   return past.toISOString().split('T')[0];
 }
 
+export function toSeconds(ts: number): import('lightweight-charts').Time {
+  return (ts > 1e11 ? Math.floor(ts / 1000) : ts) as import('lightweight-charts').Time;
+}
+
 export function convertOHLCData(data: OHLCData[]) {
   return data
     .map((d) => ({
-      time: d[0] as Time, // ensure seconds, not ms
+      time: toSeconds(d[0] as number), // ensure seconds, not ms
       open: d[1],
       high: d[2],
       low: d[3],

@@ -45,8 +45,12 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
         setSuccess(`Successfully sold ${parsedAmount} ${symbol.toUpperCase()}`);
       }
       setAmount('');
-    } catch (e: any) {
-      setError(e.message || 'Trade failed');
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError('Trade failed');
+      }
     }
   };
 

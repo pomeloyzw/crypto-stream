@@ -2,6 +2,62 @@
 
 import qs from "query-string";
 
+export interface CoinGeckoSearchCoin {
+  id: string;
+  name: string;
+  api_symbol: string;
+  symbol: string;
+  market_cap_rank: number | null;
+  thumb: string;
+  large: string;
+}
+
+export interface CoinGeckoSearchResponse {
+  coins: CoinGeckoSearchCoin[];
+  exchanges: unknown[];
+  icos: unknown[];
+  categories: unknown[];
+  nfts: unknown[];
+}
+
+export interface CoinGeckoTicker {
+  base: string;
+  target: string;
+  market: {
+    name: string;
+    identifier: string;
+    has_trading_incentive: boolean;
+  };
+  last: number;
+  volume: number;
+  converted_last: {
+    btc: number;
+    eth: number;
+    usd: number;
+  };
+  converted_volume: {
+    btc: number;
+    eth: number;
+    usd: number;
+  };
+  trust_score: string;
+  bid_ask_spread_percentage: number;
+  timestamp: string;
+  last_traded_at: string;
+  last_fetch_at: string;
+  is_anomaly: boolean;
+  is_stale: boolean;
+  trade_url: string | null;
+  token_info_url: string | null;
+  coin_id: string;
+  target_coin_id: string;
+}
+
+export interface CoinGeckoTickersResponse {
+  name: string;
+  tickers: CoinGeckoTicker[];
+}
+
 const BASE_URL = process.env.COINGECKO_API_URL;
 const API_KEY = process.env.COINGECKO_API_KEY;
 const API_KEY_HEADER =
@@ -87,11 +143,11 @@ export async function getPools(
   }
 }
 
-export async function searchCoins(query: string) {
+export async function searchCoins(query: string): Promise<CoinGeckoSearchCoin[]> {
   if (!query) return [];
   
   try {
-    const data = await coingeckoFetcher<{ coins: any[] }>(
+    const data = await coingeckoFetcher<CoinGeckoSearchResponse>(
       '/search',
       { query },
       60
@@ -106,7 +162,7 @@ export async function searchCoins(query: string) {
 
 export async function fetchCoinGeckoOhlc(coinId: string, days: number = 1): Promise<OHLCData[]> {
   try {
-    const data = await coingeckoFetcher<any[]>(
+    const data = await coingeckoFetcher<[number, number, number, number, number][]>(
       `/coins/${coinId}/ohlc`,
       { vs_currency: "usd", days },
       60
@@ -114,11 +170,11 @@ export async function fetchCoinGeckoOhlc(coinId: string, days: number = 1): Prom
 
     if (Array.isArray(data)) {
       return data.map((k) => [
-        Math.floor(Number(k[0]) / 1000), // ms -> seconds
-        parseFloat(String(k[1])),
-        parseFloat(String(k[2])),
-        parseFloat(String(k[3])),
-        parseFloat(String(k[4])),
+        Math.floor(k[0] / 1000), // ms -> seconds
+        k[1],
+        k[2],
+        k[3],
+        k[4],
       ] as OHLCData);
     }
     return [];
@@ -128,9 +184,9 @@ export async function fetchCoinGeckoOhlc(coinId: string, days: number = 1): Prom
   }
 }
 
-export async function fetchCoinGeckoTicker(coinId: string) {
+export async function fetchCoinGeckoTicker(coinId: string): Promise<CoinGeckoTickersResponse | null> {
   try {
-    const data = await coingeckoFetcher<{ tickers: any[] }>(
+    const data = await coingeckoFetcher<CoinGeckoTickersResponse>(
       `/coins/${coinId}/tickers`,
       { include_exchange_logo: "false", page: "1" },
       10

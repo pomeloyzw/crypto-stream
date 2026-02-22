@@ -14,8 +14,11 @@ const Header = () => {
 	useEffect(() => {
 		const nav = navigator as Navigator & { userAgentData?: { platform: string } };
 		const platform = nav.userAgentData?.platform || navigator.platform || navigator.userAgent;
-		setIsMac(/Mac|iPhone|iPad/i.test(platform));
-	}, []);
+		const isApple = /Mac|iPhone|iPad/i.test(platform);
+		if (isApple !== isMac) {
+			setTimeout(() => setIsMac(isApple), 0);
+		}
+	}, [isMac]);
 
 	return (
 		<header>

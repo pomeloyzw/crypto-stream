@@ -14,13 +14,17 @@ export const usePortfolio = () => {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      try {
-        setPortfolio(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to parse portfolio from localStorage', e);
-      }
+      setTimeout(() => {
+        try {
+          setPortfolio(JSON.parse(stored));
+        } catch (e) {
+          console.error('Failed to parse portfolio from localStorage', e);
+        }
+      }, 0);
     }
-    setIsLoaded(true);
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 0);
   }, []);
 
   useEffect(() => {
@@ -40,7 +44,7 @@ export const usePortfolio = () => {
       const newBalance = prev.balance - total;
       
       const holdingIndex = prev.holdings.findIndex(h => h.coinId === coinId);
-      let newHoldings = [...prev.holdings];
+      const newHoldings = [...prev.holdings];
       
       if (holdingIndex >= 0) {
         const existing = newHoldings[holdingIndex];

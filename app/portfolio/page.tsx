@@ -25,7 +25,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -165,7 +164,7 @@ const PortfolioPage = () => {
               <Wallet className="w-12 h-12 text-gray-500" strokeWidth={1.5} />
             </div>
             <h4 className="text-xl font-semibold text-white mb-2">No Assets Yet</h4>
-            <p className="mb-8 max-w-sm text-sm">You don't own any coins. Start paper trading to track your portfolio performance here.</p>
+            <p className="mb-8 max-w-sm text-sm">You don&apos;t own any coins. Start paper trading to track your portfolio performance here.</p>
             <Link href="/coins">
               <Button variant="primary" className="h-11 px-6">Explore Coins to Buy</Button>
             </Link>

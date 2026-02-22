@@ -16,9 +16,12 @@ export const useBinanceWebSocket = ({
     if (!symbol) return;
 
     // Clear stale candle data from previous interval/symbol
-    setOhlcv(null);
-    setTrades([]);
-    setPrice(null);
+    // Use queueMicrotask to avoid synchronous render warning
+    queueMicrotask(() => {
+      setOhlcv(null);
+      setTrades([]);
+      setPrice(null);
+    });
 
     binanceWSService.connect(symbol, interval);
 
