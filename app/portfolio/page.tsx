@@ -101,7 +101,7 @@ const PortfolioPage = () => {
   }
 
   const holdingsValue = holdings.reduce((total, holding) => {
-    const currentPrice = currentPrices[holding.coinId] || holding.averageBuyPrice;
+    const currentPrice = currentPrices[holding.coinId] ?? holding.averageBuyPrice;
     return total + holding.amount * currentPrice;
   }, 0);
 
@@ -209,7 +209,7 @@ const PortfolioPage = () => {
               </TableHeader>
               <TableBody>
                 {holdings.map((holding) => {
-                  const currentPrice = currentPrices[holding.coinId] || holding.averageBuyPrice;
+                  const currentPrice = currentPrices[holding.coinId] ?? holding.averageBuyPrice;
                   const totalValue = holding.amount * currentPrice;
                   const totalCost = holding.amount * holding.averageBuyPrice;
                   const pnl = totalValue - totalCost;
