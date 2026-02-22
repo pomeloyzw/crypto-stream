@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { formatCurrency } from '@/lib/utils';
-import { cn } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { theme } from '@/lib/theme';
 import { Wallet } from 'lucide-react';
 
@@ -90,13 +89,13 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
       <div className="flex rounded-lg bg-dark-400 p-1">
         <button
           onClick={() => { setTab('buy'); setError(''); setSuccess(''); }}
-          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'buy' ? theme.colors.buyTab : 'text-gray-400 hover:text-white cursor-pointer')}
+          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'buy' ? theme.classes.buyTab : 'text-gray-400 hover:text-white cursor-pointer')}
         >
           Buy
         </button>
         <button
           onClick={() => { setTab('sell'); setError(''); setSuccess(''); }}
-          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'sell' ? theme.colors.sellTab : 'text-gray-400 hover:text-white cursor-pointer')}
+          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'sell' ? theme.classes.sellTab : 'text-gray-400 hover:text-white cursor-pointer')}
         >
           Sell
         </button>
@@ -132,8 +131,8 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
           </span>
         </div>
 
-        {error && <p className={`text-xs ${theme.colors.trendDown}`}>{error}</p>}
-        {success && <p className={`text-xs ${theme.colors.trendUp}`}>{success}</p>}
+        {error && <p className={`text-xs ${theme.classes.trendDown}`}>{error}</p>}
+        {success && <p className={`text-xs ${theme.classes.trendUp}`}>{success}</p>}
 
         <Button
           onClick={handleTrade}

@@ -153,7 +153,7 @@ const PortfolioPage = () => {
         <div className="bg-dark-500 rounded-xl border border-white/5 p-6">
           <p className="text-sm font-medium text-gray-400 mb-1">Total Balance</p>
           <h2 className="text-3xl font-bold text-white">{formatCurrency(totalValue)}</h2>
-          <div className={`mt-2 flex items-center gap-1 text-sm font-medium ${isProfit ? theme.colors.trendUp : theme.colors.trendDown}`}>
+          <div className={`mt-2 flex items-center gap-1 text-sm font-medium ${isProfit ? theme.classes.trendUp : theme.classes.trendDown}`}>
             {isProfit ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
             {isProfit ? '+' : ''}{formatCurrency(totalProfitLoss)}
             <span className="text-gray-500 ml-1">All Time</span>
@@ -191,7 +191,7 @@ const PortfolioPage = () => {
             <h4 className="text-xl font-semibold text-white mb-2">No Assets Yet</h4>
             <p className="mb-8 max-w-sm text-sm">You don&apos;t own any coins. Start paper trading to track your portfolio performance here.</p>
             <Link href="/coins">
-              <Button variant="primary" className="h-11 px-6">Explore Coins to Buy</Button>
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white h-11 px-6 border-0">Explore Coins to Buy</Button>
             </Link>
           </div>
         ) : (
@@ -211,9 +211,9 @@ const PortfolioPage = () => {
               <TableBody>
                 {holdings.map((holding) => {
                   const currentPrice = currentPrices[holding.coinId] ?? holding.averageBuyPrice;
-                  const totalValue = holding.amount * currentPrice;
+                  const holdingTotalValue = holding.amount * currentPrice;
                   const totalCost = holding.amount * holding.averageBuyPrice;
-                  const pnl = totalValue - totalCost;
+                  const pnl = holdingTotalValue - totalCost;
                   const pnlPercentage = (pnl / totalCost) * 100;
                   const isPositive = pnl >= 0;
 
@@ -240,8 +240,8 @@ const PortfolioPage = () => {
                           formatCurrency(currentPrice)
                         )}
                       </TableCell>
-                      <TableCell className="text-right font-medium text-white">{formatCurrency(totalValue)}</TableCell>
-                      <TableCell className={`text-right font-medium ${isPositive ? theme.colors.trendUp : theme.colors.trendDown}`}>
+                      <TableCell className="text-right font-medium text-white">{formatCurrency(holdingTotalValue)}</TableCell>
+                      <TableCell className={`text-right font-medium ${isPositive ? theme.classes.trendUp : theme.classes.trendDown}`}>
                         <div className="flex items-center justify-end gap-1">
                           {isPositive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                           {formatCurrency(pnl)}
@@ -289,7 +289,7 @@ const PortfolioPage = () => {
                       })}
                     </TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded text-xs font-semibold ${tx.type === 'buy' ? theme.colors.buyTx : theme.colors.sellTx}`}>
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${tx.type === 'buy' ? theme.classes.buyTx : theme.classes.sellTx}`}>
                         {tx.type.toUpperCase()}
                       </span>
                     </TableCell>
@@ -300,7 +300,7 @@ const PortfolioPage = () => {
                       {tx.amount} <span className="text-xs text-gray-500 uppercase">{tx.symbol}</span>
                     </TableCell>
                     <TableCell className="text-right text-gray-300">{formatCurrency(tx.price)}</TableCell>
-                    <TableCell className={`text-right font-medium ${tx.type === 'buy' ? theme.colors.trendUp : theme.colors.trendDown}`}>
+                    <TableCell className={`text-right font-medium ${tx.type === 'buy' ? theme.classes.trendUp : theme.classes.trendDown}`}>
                       {tx.type === 'buy' ? '-' : '+'}{formatCurrency(tx.total)}
                     </TableCell>
                   </TableRow>
@@ -320,7 +320,7 @@ const PortfolioPage = () => {
                         e.preventDefault();
                         setCurrentPage(Math.max(1, currentPage - 1));
                       }}
-                      className={currentPage === 1 ? theme.colors.paginationDisabled : theme.colors.paginationControl}
+                      className={currentPage === 1 ? theme.classes.paginationDisabled : theme.classes.paginationControl}
                     />
                   </PaginationItem>
 
@@ -333,7 +333,7 @@ const PortfolioPage = () => {
                           setCurrentPage(i + 1);
                         }}
                         isActive={currentPage === i + 1}
-                        className={currentPage === i + 1 ? theme.colors.paginationActive : theme.colors.paginationInactive}
+                        className={currentPage === i + 1 ? theme.classes.paginationActive : theme.classes.paginationInactive}
                       >
                         {i + 1}
                       </PaginationLink>
@@ -347,7 +347,7 @@ const PortfolioPage = () => {
                         e.preventDefault();
                         setCurrentPage(Math.min(Math.ceil(history.length / rowsPerPage), currentPage + 1));
                       }}
-                      className={currentPage === Math.ceil(history.length / rowsPerPage) ? theme.colors.paginationDisabled : theme.colors.paginationControl}
+                      className={currentPage === Math.ceil(history.length / rowsPerPage) ? theme.classes.paginationDisabled : theme.classes.paginationControl}
                     />
                   </PaginationItem>
                 </PaginationContent>

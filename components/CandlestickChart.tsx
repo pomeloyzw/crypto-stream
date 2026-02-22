@@ -7,6 +7,12 @@ import { convertOHLCData, toSeconds } from "@/lib/utils";
 import { CandlestickSeries, createChart, IChartApi, ISeriesApi } from "lightweight-charts";
 import { useEffect, useRef, useState, useTransition } from "react";
 
+const normalizeOhlcTimestamps = (data: OHLCData[]): OHLCData[] => {
+  return data.map(
+    (item) => [toSeconds(item[0]) as unknown as number, item[1], item[2], item[3], item[4]] as OHLCData
+  );
+};
+
 const CandlestickChart = ({
   children,
   data,
@@ -119,9 +125,7 @@ const CandlestickChart = ({
 
     // Binance data is already in seconds; CoinGecko data is in milliseconds
     // Graceful fallback for dynamic data souring: determine if ms or s based on size
-    const convertedToSeconds = ohlcDataRef.current.map(
-      (item) => [toSeconds(item[0]) as unknown as number, item[1], item[2], item[3], item[4]] as OHLCData
-    );
+    const convertedToSeconds = normalizeOhlcTimestamps(ohlcDataRef.current);
 
     series.setData(convertOHLCData(convertedToSeconds));
     chart.timeScale().fitContent();
@@ -159,9 +163,7 @@ const CandlestickChart = ({
 
     // Binance data is already in seconds; CoinGecko data is in milliseconds
     // Graceful fallback for dynamic data souring: determine if ms or s based on size
-    const convertedToSeconds = ohlcData.map(
-      (item) => [toSeconds(item[0]) as unknown as number, item[1], item[2], item[3], item[4]] as OHLCData
-    );
+    const convertedToSeconds = normalizeOhlcTimestamps(ohlcData);
 
     const converted = convertOHLCData(convertedToSeconds);
     candleSeriesRef.current.setData(converted);

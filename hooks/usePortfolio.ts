@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export const INITIAL_BALANCE = 10000;
 const STORAGE_KEY = 'crypto_pulse_portfolio';
@@ -14,22 +14,24 @@ export const usePortfolio = () => {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      setTimeout(() => {
-        try {
-          setPortfolio(JSON.parse(stored));
-        } catch (e) {
-          console.error('Failed to parse portfolio from localStorage', e);
-        }
-      }, 0);
+      try {
+        setPortfolio(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse portfolio from localStorage', e);
+      }
     }
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, 0);
+    setIsLoaded(true);
   }, []);
+
+  const lastSavedRef = useRef<string>('');
 
   useEffect(() => {
     if (isLoaded) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolio));
+      const currentStr = JSON.stringify(portfolio);
+      if (currentStr !== lastSavedRef.current) {
+        localStorage.setItem(STORAGE_KEY, currentStr);
+        lastSavedRef.current = currentStr;
+      }
     }
   }, [portfolio, isLoaded]);
 
@@ -67,7 +69,7 @@ export const usePortfolio = () => {
       }
 
       const transaction: PortfolioTransaction = {
-        id: Math.random().toString(36).substring(2, 9),
+        id: crypto.randomUUID(),
         type: 'buy',
         coinId,
         symbol,
@@ -116,7 +118,7 @@ export const usePortfolio = () => {
       }
 
       const transaction: PortfolioTransaction = {
-        id: Math.random().toString(36).substring(2, 9),
+        id: crypto.randomUUID(),
         type: 'sell',
         coinId,
         symbol,

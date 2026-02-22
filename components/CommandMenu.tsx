@@ -44,7 +44,9 @@ const CommandMenu = () => {
 
   useEffect(() => {
     if (!debouncedQuery) {
+      searchRequestIdRef.current++;
       setResults([]);
+      setLoading(false);
       return;
     }
 

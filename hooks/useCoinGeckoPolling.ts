@@ -16,6 +16,7 @@ export const useCoinGeckoPolling = ({
     let isMounted = true;
 
     // Clear stale data from previous coinId
+    // Defer state resets into microtask to avoid reacting in the middle of current render loop
     queueMicrotask(() => {
       setPrice(null);
       setTrades([]);
@@ -60,8 +61,8 @@ export const useCoinGeckoPolling = ({
           );
           const bestTicker = validTickers.length > 0 ? validTickers[0] : tickerData.tickers[0];
           
-          const p = typeof bestTicker.last === 'number' ? bestTicker.last : parseFloat(bestTicker.last as unknown as string);
-          const v = typeof bestTicker.volume === 'number' ? bestTicker.volume : parseFloat(bestTicker.volume as unknown as string);
+          const p = bestTicker.last;
+          const v = bestTicker.volume;
 
           if (!isNaN(p)) {
             setPrice({

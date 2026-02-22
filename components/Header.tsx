@@ -16,10 +16,8 @@ const Header = () => {
 		const nav = navigator as Navigator & { userAgentData?: { platform: string } };
 		const platform = nav.userAgentData?.platform || navigator.platform || navigator.userAgent;
 		const isApple = /Mac|iPhone|iPad/i.test(platform);
-		if (isApple !== isMac) {
-			setTimeout(() => setIsMac(isApple), 0);
-		}
-	}, [isMac]);
+		setIsMac(isApple);
+	}, []);
 
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -78,6 +76,7 @@ const Header = () => {
 					className="md:hidden z-50 p-2 text-purple-100 hover:text-white transition-colors relative"
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
 					aria-label="Toggle mobile menu"
+					aria-expanded={isMobileMenuOpen}
 				>
 					{isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
 				</button>

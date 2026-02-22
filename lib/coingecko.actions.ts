@@ -191,6 +191,13 @@ export async function fetchCoinGeckoTicker(coinId: string): Promise<CoinGeckoTic
       { include_exchange_logo: "false", page: "1" },
       10
     );
+    if (data && data.tickers) {
+      data.tickers = data.tickers.map(t => ({
+        ...t,
+        last: typeof t.last === 'number' ? t.last : parseFloat(t.last as unknown as string),
+        volume: typeof t.volume === 'number' ? t.volume : parseFloat(t.volume as unknown as string)
+      }));
+    }
     return data;
   } catch (error) {
     console.error("Error fetching CoinGecko Ticker:", error);
