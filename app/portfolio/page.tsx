@@ -137,7 +137,8 @@ const PortfolioPage = () => {
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
-                className="bg-red-600 hover:bg-red-500 text-white cursor-pointer border-0"
+                variant="destructive"
+                className="cursor-pointer border-0"
                 onClick={() => resetPortfolio()}
               >
                 Yes, Reset Portfolio
