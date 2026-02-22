@@ -1,6 +1,6 @@
 'use client';
 
-import { usePortfolio } from '@/hooks/usePortfolio';
+import { usePortfolio, INITIAL_BALANCE } from '@/hooks/usePortfolio';
 import { formatCurrency } from '@/lib/utils';
 import {
   Table,
@@ -98,7 +98,7 @@ const PortfolioPage = () => {
   }, 0);
 
   const totalValue = balance + holdingsValue;
-  const totalProfitLoss = totalValue - 10000;
+  const totalProfitLoss = totalValue - INITIAL_BALANCE;
   const isProfit = totalProfitLoss >= 0;
 
   return (
@@ -121,7 +121,7 @@ const PortfolioPage = () => {
               <AlertDialogTitle className="text-white">Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription className="text-gray-400">
                 This action cannot be undone. This will permanently delete your portfolio
-                history and reset your interactive balance to $10,000.
+                history and reset your interactive balance to {formatCurrency(INITIAL_BALANCE)}.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

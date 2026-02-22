@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const INITIAL_BALANCE = 10000;
+export const INITIAL_BALANCE = 10000;
 const STORAGE_KEY = 'crypto_pulse_portfolio';
 
 export const usePortfolio = () => {
