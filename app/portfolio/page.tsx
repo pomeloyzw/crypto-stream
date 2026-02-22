@@ -39,6 +39,7 @@ const PortfolioPage = () => {
   const { balance, holdings, history, isLoaded, resetPortfolio } = usePortfolio();
   const [currentPrices, setCurrentPrices] = useState<Record<string, number>>({});
   const [isLoadingPrices, setIsLoadingPrices] = useState(false);
+  const [pricesError, setPricesError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -46,17 +47,29 @@ const PortfolioPage = () => {
     const fetchPrices = async () => {
       if (holdings.length === 0) return;
       setIsLoadingPrices(true);
+      setPricesError(null);
       try {
         const ids = holdings.map((h) => h.coinId).join(',');
         const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`);
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`HTTP ${res.status}: ${errorText}`);
+        }
+
         const data = await res.json();
         const prices: Record<string, number> = {};
-        Object.keys(data).forEach((id) => {
-          prices[id] = data[id].usd;
-        });
+        if (data && typeof data === 'object') {
+          Object.keys(data).forEach((id) => {
+            if (data[id] && typeof data[id].usd === 'number') {
+              prices[id] = data[id].usd;
+            }
+          });
+        }
         setCurrentPrices(prices);
       } catch (e) {
         console.error('Failed to fetch current prices', e);
+        setPricesError(e instanceof Error ? e.message : 'Unknown error');
       } finally {
         setIsLoadingPrices(false);
       }
@@ -154,8 +167,11 @@ const PortfolioPage = () => {
       {/* Holdings Section */}
       <div className="bg-dark-500 rounded-xl border border-white/5 overflow-hidden">
         <div className="p-6 border-b border-white/5 flex justify-between items-center bg-dark-400/30">
-          <h3 className="text-xl font-semibold text-white">Your Holdings</h3>
-          {isLoadingPrices && <RefreshCw className="animate-spin text-gray-400" size={16} />}
+          <div className="flex items-center gap-3">
+            <h3 className="text-xl font-semibold text-white">Your Holdings</h3>
+            {pricesError && <span className="text-xs font-medium text-red-400 bg-red-400/10 px-2.5 py-1 rounded-full border border-red-500/20">Live Prices Unavailable</span>}
+          </div>
+          {isLoadingPrices && !pricesError && <RefreshCw className="animate-spin text-gray-400" size={16} />}
         </div>
 
         {holdings.length === 0 ? (
@@ -206,6 +222,11 @@ const PortfolioPage = () => {
                       <TableCell className="text-right text-gray-300">
                         {isLoadingPrices && !currentPrices[holding.coinId] ? (
                           <span className="text-gray-500">Loading...</span>
+                        ) : pricesError && !currentPrices[holding.coinId] ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-xs text-red-400 mb-0.5" title={pricesError}>Fetch Error</span>
+                            <span className="text-xs text-gray-500">Using avg: {formatCurrency(holding.averageBuyPrice)}</span>
+                          </div>
                         ) : (
                           formatCurrency(currentPrice)
                         )}
