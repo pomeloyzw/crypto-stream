@@ -227,7 +227,7 @@ const PortfolioPage = () => {
                         </Link>
                       </TableCell>
                       <TableCell className="text-right text-gray-300">
-                        {holding.amount} <span className="text-xs text-gray-500 uppercase">{holding.symbol}</span>
+                        {Intl.NumberFormat('en-US', { maximumFractionDigits: 8 }).format(holding.amount)} <span className="text-xs text-gray-500 uppercase">{holding.symbol}</span>
                       </TableCell>
                       <TableCell className="text-right text-gray-300">{formatCurrency(holding.averageBuyPrice)}</TableCell>
                       <TableCell className="text-right text-gray-300">
@@ -299,7 +299,7 @@ const PortfolioPage = () => {
                       {tx.name} <span className="text-gray-500 text-xs ml-1 uppercase">{tx.symbol}</span>
                     </TableCell>
                     <TableCell className="text-right text-gray-300">
-                      {tx.amount} <span className="text-xs text-gray-500 uppercase">{tx.symbol}</span>
+                      {Intl.NumberFormat('en-US', { maximumFractionDigits: 8 }).format(tx.amount)} <span className="text-xs text-gray-500 uppercase">{tx.symbol}</span>
                     </TableCell>
                     <TableCell className="text-right text-gray-300">{formatCurrency(tx.price)}</TableCell>
                     <TableCell className={`text-right font-medium ${tx.type === 'buy' ? theme.classes.trendUp : theme.classes.trendDown}`}>

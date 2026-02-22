@@ -21,13 +21,21 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isTrading, setIsTrading] = useState(false);
 
   const holding = holdings.find((h) => h.coinId === coinId);
   const holdingAmount = holding ? holding.amount : 0;
 
   const handleTrade = async () => {
+    if (isTrading) return;
     setError('');
     setSuccess('');
+
+    if (!currentPrice || currentPrice <= 0) {
+      setError('Invalid price');
+      return;
+    }
+
     const parsedAmount = parseFloat(amount);
 
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -47,6 +55,7 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
       }
     }
 
+    setIsTrading(true);
     try {
       if (tab === 'buy') {
         await buyCoin(coinId, symbol, name, parsedAmount, currentPrice);
@@ -62,13 +71,19 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
       } else {
         setError('Trade failed');
       }
+    } finally {
+      setIsTrading(false);
     }
   };
 
   const setMaxAmount = () => {
     if (tab === 'buy') {
-      const maxBuy = balance / currentPrice;
-      setAmount(maxBuy.toFixed(8));
+      if (!currentPrice || currentPrice <= 0) {
+        setAmount('0');
+        return;
+      }
+      const maxBuy = Math.floor((balance / currentPrice) * 1e8) / 1e8;
+      setAmount(maxBuy.toString());
     } else {
       setAmount(holdingAmount.toString());
     }
@@ -88,13 +103,13 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
 
       <div className="flex rounded-lg bg-dark-400 p-1">
         <button
-          onClick={() => { setTab('buy'); setError(''); setSuccess(''); }}
+          onClick={() => { setTab('buy'); setError(''); setSuccess(''); setAmount(''); }}
           className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'buy' ? theme.classes.buyTab : 'text-gray-400 hover:text-white cursor-pointer')}
         >
           Buy
         </button>
         <button
-          onClick={() => { setTab('sell'); setError(''); setSuccess(''); }}
+          onClick={() => { setTab('sell'); setError(''); setSuccess(''); setAmount(''); }}
           className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'sell' ? theme.classes.sellTab : 'text-gray-400 hover:text-white cursor-pointer')}
         >
           Sell
@@ -137,9 +152,10 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
         <Button
           onClick={handleTrade}
           variant={tab === 'buy' ? 'buy' : 'sell'}
+          disabled={isTrading}
           className="w-full h-10 font-semibold !text-white border-0"
         >
-          {tab === 'buy' ? 'Buy' : 'Sell'} {symbol.toUpperCase()}
+          {isTrading ? 'Processing...' : `${tab === 'buy' ? 'Buy' : 'Sell'} ${symbol.toUpperCase()}`}
         </Button>
       </div>
     </div>

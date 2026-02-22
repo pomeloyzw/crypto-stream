@@ -27,7 +27,6 @@ const Header = () => {
 
 	// Close mobile menu when route changes
 	useEffect(() => {
-		// eslint-disable-next-line react-hooks/set-state-in-effect
 		setIsMobileMenuOpen(false);
 	}, [pathname]);
 
@@ -98,6 +97,7 @@ const Header = () => {
 						id={mobileMenuId}
 						role="dialog"
 						aria-modal="true"
+						aria-label="Mobile menu"
 						className="md:hidden fixed inset-0 z-40 bg-dark-700/95 backdrop-blur-md pt-24 px-6 pb-6 flex flex-col gap-6 h-[100dvh]"
 					>
 						<button
