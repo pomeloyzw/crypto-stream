@@ -34,15 +34,15 @@ export async function fetchBinanceKlines(
   }
 
   // Binance kline response format:
-  // [openTime, open, high, low, close, volume, closeTime, ...]
-  const rawKlines: (string | number)[][] = await response.json();
+  // [openTime, open, high, low, close, volume, closeTime, quoteVolume, count, takerBuyVolume, takerBuyQuoteVolume, ignore]
+  const rawKlines: [number, string, string, string, string, string, number, string, number, string, string, string][] = await response.json();
 
   return rawKlines.map((k) => [
-    Math.floor(Number(k[0]) / 1000),  // Convert ms → seconds to align with live kline data
-    parseFloat(String(k[1])),         // Open
-    parseFloat(String(k[2])),         // High
-    parseFloat(String(k[3])),         // Low
-    parseFloat(String(k[4])),         // Close
+    Math.floor(k[0] / 1000),  // Convert ms → seconds to align with live kline data
+    parseFloat(k[1]),         // Open
+    parseFloat(k[2]),         // High
+    parseFloat(k[3]),         // Low
+    parseFloat(k[4]),         // Close
   ] as OHLCData);
 }
 

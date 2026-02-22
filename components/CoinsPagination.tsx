@@ -9,8 +9,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { buildPageNumbers, cn, ELLIPSIS } from "@/lib/utils";
+import { buildPageNumbers, ELLIPSIS } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { theme } from "@/lib/theme";
 
 
 const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) => {
@@ -38,10 +39,10 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
                 handlePageChange(currentPage - 1);
               }
             }}
-            className={currentPage === 1 ? "control-disabled" : "control-button"}
+            className={currentPage === 1 ? theme.colors.paginationDisabled : theme.colors.paginationControl}
           />
         </PaginationItem>
-        
+
         <div className="pagination-pages">
           {pageNumbers.map((page, index) => (
             <PaginationItem key={index}>
@@ -55,9 +56,7 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
                     e.preventDefault();
                     handlePageChange(page);
                   }}
-                  className={cn("page-link", {
-                    "page-link-active": currentPage === page
-                  })}
+                  className={currentPage === page ? theme.colors.paginationActive : theme.colors.paginationInactive}
                 >
                   {page}
                 </PaginationLink>
@@ -65,7 +64,7 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
             </PaginationItem>
           ))}
         </div>
-  
+
         <PaginationItem className="pagination-control next">
           <PaginationNext
             href="#"
@@ -77,7 +76,7 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
                 handlePageChange(currentPage + 1);
               }
             }}
-            className={isLastPage ? "control-disabled" : "control-button"}
+            className={isLastPage ? theme.colors.paginationDisabled : theme.colors.paginationControl}
           />
         </PaginationItem>
       </PaginationContent>

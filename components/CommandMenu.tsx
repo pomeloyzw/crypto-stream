@@ -5,7 +5,8 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { Search } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { searchCoins } from '@/lib/coingecko.actions';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
 
 interface SearchResult {
   id: string;
@@ -22,6 +23,7 @@ const CommandMenu = () => {
   const router = useRouter();
 
   const debouncedQuery = useDebounce(query, 500);
+  const searchRequestIdRef = useRef<number>(0);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -42,20 +44,28 @@ const CommandMenu = () => {
 
   useEffect(() => {
     if (!debouncedQuery) {
+      searchRequestIdRef.current++;
       setResults([]);
+      setLoading(false);
       return;
     }
 
     const fetchResults = async () => {
+      const requestId = ++searchRequestIdRef.current;
       setLoading(true);
-      setResults([]);
       try {
         const coins = await searchCoins(debouncedQuery);
-        setResults(coins.slice(0, 5));
+        // Only update state if this is still the most recent request
+        if (requestId === searchRequestIdRef.current) {
+          setResults(coins.slice(0, 5));
+        }
       } catch (error) {
         console.error('Search error:', error);
       } finally {
-        setLoading(false);
+        // Only clear loading state if this is the most recent request
+        if (requestId === searchRequestIdRef.current) {
+          setLoading(false);
+        }
       }
     };
 
@@ -114,7 +124,9 @@ const CommandMenu = () => {
                     }}
                     className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-white/10 aria-selected:text-white"
                   >
-                    <img src={coin.thumb} alt={coin.name} className="mr-2 h-5 w-5 rounded-full" />
+                    <div className="mr-2 h-5 w-5 shrink-0 rounded-full overflow-hidden relative">
+                      <Image src={coin.thumb || '/placeholder.png'} alt={coin.name} fill sizes="20px" className="object-cover" />
+                    </div>
                     <span className="font-medium text-white">{coin.name}</span>
                     <span className="ml-2 text-gray-500">{coin.symbol}</span>
                   </CommandItem>

@@ -16,10 +16,13 @@ export const useCoinGeckoPolling = ({
     let isMounted = true;
 
     // Clear stale data from previous coinId
-    setPrice(null);
-    setTrades([]);
-    setOhlcv(null);
-    setIsConnected(false);
+    // Defer state resets into microtask to avoid reacting in the middle of current render loop
+    queueMicrotask(() => {
+      setPrice(null);
+      setTrades([]);
+      setOhlcv(null);
+      setIsConnected(false);
+    });
 
     // Determine days for OHLC based on interval.
     // CoinGecko only supports 1, 7, 14, 30, 90, 180, 365 days.
@@ -54,12 +57,12 @@ export const useCoinGeckoPolling = ({
 
         if (tickerData && tickerData.tickers && tickerData.tickers.length > 0) {
           const validTickers = tickerData.tickers.filter(
-            (t: any) => t.target === "USD" || t.target === "USDT" || t.target === "USDC"
+            (t) => t.target === "USD" || t.target === "USDT" || t.target === "USDC"
           );
           const bestTicker = validTickers.length > 0 ? validTickers[0] : tickerData.tickers[0];
           
-          const p = typeof bestTicker.last === 'number' ? bestTicker.last : parseFloat(bestTicker.last);
-          const v = typeof bestTicker.volume === 'number' ? bestTicker.volume : parseFloat(bestTicker.volume);
+          const p = bestTicker.last;
+          const v = bestTicker.volume;
 
           if (!isNaN(p)) {
             setPrice({
@@ -94,7 +97,7 @@ export const useCoinGeckoPolling = ({
 
         const hasData = (ohlcData && ohlcData.length > 0) || (!!tickerData && !!tickerData.tickers && tickerData.tickers.length > 0);
         setIsConnected(hasData);
-      } catch (e) {
+      } catch {
         if (isMounted) setIsConnected(false);
       }
     };

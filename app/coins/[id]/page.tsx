@@ -1,5 +1,6 @@
 import Converter from "@/components/Converter";
 import LiveDataWrapper from "@/components/LiveDataWrapper";
+import TradeCard from "@/components/TradeCard";
 import { coingeckoFetcher } from "@/lib/coingecko.actions";
 import { formatCurrency } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
@@ -66,11 +67,17 @@ const page = async ({ params }: NextPageProps) => {
         </LiveDataWrapper>
       </section>
 
-      <section className="secondary">
+      <section className="secondary flex flex-col gap-6">
         <Converter
           symbol={coinData.symbol}
           icon={coinData.image.small}
           priceList={coinData.market_data.current_price}
+        />
+        <TradeCard
+          coinId={id}
+          symbol={coinData.symbol}
+          name={coinData.name}
+          currentPrice={coinData.market_data.current_price.usd}
         />
         <div className="details">
           <h4>Coin Details</h4>

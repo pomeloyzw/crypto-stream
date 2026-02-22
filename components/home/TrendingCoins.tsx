@@ -4,6 +4,7 @@ import { TrendingDown, TrendingUp } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link";
 import { DataTable } from "../DataTable";
+import { theme } from "@/lib/theme";
 
 const TrendingCoins = async () => {
   const trendingCoins = await coingeckoFetcher<{ coins: TrendingCoin[] }>("/search/trending", undefined, 300);
@@ -31,7 +32,7 @@ const TrendingCoins = async () => {
         const isTrendingUp = item.data.price_change_percentage_24h.usd > 0;
 
         return (
-          <div className={cn("price-change", isTrendingUp ? "text-green-500" : "text-red-500")}>
+          <div className={cn("price-change", isTrendingUp ? theme.colors.trendUp : theme.colors.trendDown)}>
             <p className="flex items-center">
               {formatPercentage(item.data.price_change_percentage_24h.usd, 2)}
               {isTrendingUp ? (
