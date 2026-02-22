@@ -2,6 +2,7 @@ import { cn, formatCurrency, formatPercentage } from "@/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import Image from 'next/image';
 import { Badge } from "./ui/badge";
+import { theme } from "@/lib/theme";
 
 type Trend = 'up' | 'down' | 'neutral';
 
@@ -72,8 +73,8 @@ const CoinHeader = ({
 
             <div
               className={cn('value', {
-                'text-green-500': stat.trend === 'up',
-                'text-red-500': stat.trend === 'down',
+                [theme.colors.trendUp]: stat.trend === 'up',
+                [theme.colors.trendDown]: stat.trend === 'down',
               })}
             >
               <p>{stat.formatter(stat.value)}</p>

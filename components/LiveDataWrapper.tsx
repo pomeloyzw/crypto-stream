@@ -9,6 +9,7 @@ import { formatCurrency, timeAgo } from "@/lib/utils";
 import DataTable from "./DataTable";
 import { useState, useEffect } from "react";
 import CoinHeader from "./CoinHeader";
+import { theme } from "@/lib/theme";
 
 const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
   const [klineInterval, setKlineInterval] = useState<BinanceKlineInterval>('30m');
@@ -56,7 +57,7 @@ const LiveDataWrapper = ({ coinId, coin, coinOHLCData }: LiveDataProps) => {
       header: 'Buy/Sell',
       cellClassName: 'type-cell',
       cell: (trade) => (
-        <span className={trade.type === 'buy' ? 'text-green-500' : 'text-red-500'}>
+        <span className={trade.type === 'buy' ? theme.colors.trendUp : theme.colors.trendDown}>
           {trade.type === 'buy' ? 'Buy' : 'Sell'}
           {trade.isSynthetic && <span className="ml-1 text-[10px] text-muted-foreground opacity-70">(Synthetic)</span>}
         </span>

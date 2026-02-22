@@ -3,6 +3,7 @@ import { DataTable } from "../DataTable";
 import Image from "next/image";
 import { cn, formatCurrency, formatPercentage } from "@/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
+import { theme } from "@/lib/theme";
 
 const Categories = async () => {
   const categories = await coingeckoFetcher<Category[]>("/coins/categories");
@@ -36,7 +37,7 @@ const Categories = async () => {
       cell: (category) => {
         const isTrendingUp = category.market_cap_change_24h > 0;
         return (
-          <div className={cn("change-cell", isTrendingUp ? "text-green-500" : "text-red-500")}>
+          <div className={cn("change-cell", isTrendingUp ? theme.colors.trendUp : theme.colors.trendDown)}>
             <p className="flex items-center">
               {formatPercentage(category.market_cap_change_24h, 2)}
               {isTrendingUp ? (
@@ -66,10 +67,10 @@ const Categories = async () => {
       <h4>Top Categories</h4>
       <DataTable
         columns={columns}
-        data={categories?.slice(0, 10)} 
+        data={categories?.slice(0, 10)}
         rowKey={(_, index) => index}
         tableClassName="mt-3"
-      /> 
+      />
     </div>
   )
 }

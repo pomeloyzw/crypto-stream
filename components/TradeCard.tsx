@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import { theme } from '@/lib/theme';
 import { Wallet } from 'lucide-react';
 
 interface TradeCardProps {
@@ -73,13 +74,13 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
       <div className="flex rounded-lg bg-dark-400 p-1">
         <button
           onClick={() => { setTab('buy'); setError(''); setSuccess(''); }}
-          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'buy' ? 'bg-green-500/20 text-green-400' : 'text-gray-400 hover:text-white')}
+          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'buy' ? theme.colors.buyTab : 'text-gray-400 hover:text-white cursor-pointer')}
         >
           Buy
         </button>
         <button
           onClick={() => { setTab('sell'); setError(''); setSuccess(''); }}
-          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'sell' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white')}
+          className={cn('flex-1 py-1.5 text-sm font-medium rounded-md transition-colors', tab === 'sell' ? theme.colors.sellTab : 'text-gray-400 hover:text-white cursor-pointer')}
         >
           Sell
         </button>
@@ -101,7 +102,7 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
             />
             <button
               onClick={setMaxAmount}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-purple-400 hover:text-purple-300 transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-purple-400 hover:text-purple-300 transition-colors cursor-pointer"
             >
               MAX
             </button>
@@ -115,12 +116,13 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
           </span>
         </div>
 
-        {error && <p className="text-xs text-red-400">{error}</p>}
-        {success && <p className="text-xs text-green-400">{success}</p>}
+        {error && <p className={`text-xs ${theme.colors.trendDown}`}>{error}</p>}
+        {success && <p className={`text-xs ${theme.colors.trendUp}`}>{success}</p>}
 
         <Button
           onClick={handleTrade}
-          className={cn("w-full h-10 font-semibold !text-white border-0", tab === 'buy' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700')}
+          variant={tab === 'buy' ? 'buy' : 'sell'}
+          className="w-full h-10 font-semibold !text-white border-0"
         >
           {tab === 'buy' ? 'Buy' : 'Sell'} {symbol.toUpperCase()}
         </Button>

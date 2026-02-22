@@ -11,14 +11,37 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import Link from 'next/link';
-import { ArrowUpRight, ArrowDownRight, RefreshCw, Trash2 } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, RefreshCw, Trash2, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { theme } from '@/lib/theme';
 
 const PortfolioPage = () => {
   const { balance, holdings, history, isLoaded, resetPortfolio } = usePortfolio();
   const [currentPrices, setCurrentPrices] = useState<Record<string, number>>({});
   const [isLoadingPrices, setIsLoadingPrices] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -74,18 +97,34 @@ const PortfolioPage = () => {
           <p className="text-gray-400">Paper Trading Simulator</p>
         </div>
 
-        <Button
-          variant="destructive"
-          onClick={() => {
-            if (confirm('Are you sure you want to reset your portfolio back to $10,000? All history will be lost.')) {
-              resetPortfolio();
-            }
-          }}
-          className="flex items-center gap-2"
-        >
-          <Trash2 size={16} />
-          Reset Portfolio
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="danger">
+              <Trash2 size={16} />
+              Reset Portfolio
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-dark-500 border-white/5 top-[50%]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-400">
+                This action cannot be undone. This will permanently delete your portfolio
+                history and reset your interactive balance to $10,000.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-dark-400 border-white/5 text-white hover:bg-dark-300 hover:text-white cursor-pointer">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-600 hover:bg-red-500 text-white cursor-pointer border-0"
+                onClick={() => resetPortfolio()}
+              >
+                Yes, Reset Portfolio
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {/* Overview Cards */}
@@ -93,7 +132,7 @@ const PortfolioPage = () => {
         <div className="bg-dark-500 rounded-xl border border-white/5 p-6">
           <p className="text-sm font-medium text-gray-400 mb-1">Total Balance</p>
           <h2 className="text-3xl font-bold text-white">{formatCurrency(totalValue)}</h2>
-          <div className={`mt-2 flex items-center gap-1 text-sm font-medium ${isProfit ? 'text-green-400' : 'text-red-400'}`}>
+          <div className={`mt-2 flex items-center gap-1 text-sm font-medium ${isProfit ? theme.colors.trendUp : theme.colors.trendDown}`}>
             {isProfit ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
             {isProfit ? '+' : ''}{formatCurrency(totalProfitLoss)}
             <span className="text-gray-500 ml-1">All Time</span>
@@ -121,10 +160,14 @@ const PortfolioPage = () => {
         </div>
 
         {holdings.length === 0 ? (
-          <div className="p-12 text-center text-gray-400">
-            <p className="mb-4">You don't own any coins yet.</p>
+          <div className="p-16 text-center text-gray-400 flex flex-col items-center justify-center">
+            <div className="bg-dark-400/50 p-4 rounded-full mb-4 inline-flex">
+              <Wallet className="w-12 h-12 text-gray-500" strokeWidth={1.5} />
+            </div>
+            <h4 className="text-xl font-semibold text-white mb-2">No Assets Yet</h4>
+            <p className="mb-8 max-w-sm text-sm">You don't own any coins. Start paper trading to track your portfolio performance here.</p>
             <Link href="/coins">
-              <Button>Explore Coins to Buy</Button>
+              <Button variant="primary" className="h-11 px-6">Explore Coins to Buy</Button>
             </Link>
           </div>
         ) : (
@@ -169,7 +212,7 @@ const PortfolioPage = () => {
                         )}
                       </TableCell>
                       <TableCell className="text-right font-medium text-white">{formatCurrency(totalValue)}</TableCell>
-                      <TableCell className={`text-right font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                      <TableCell className={`text-right font-medium ${isPositive ? theme.colors.trendUp : theme.colors.trendDown}`}>
                         <div className="flex items-center justify-end gap-1">
                           {isPositive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                           {formatCurrency(pnl)}
@@ -178,7 +221,7 @@ const PortfolioPage = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <Link href={`/coins/${holding.coinId}`}>
-                          <Button variant="outline" size="sm" className="h-8 border-white/10 hover:bg-white/10">Trade</Button>
+                          <Button variant="action" size="sm" className="h-8">Trade</Button>
                         </Link>
                       </TableCell>
                     </TableRow>
@@ -196,9 +239,9 @@ const PortfolioPage = () => {
           <div className="p-6 border-b border-white/5 bg-dark-400/30">
             <h3 className="text-xl font-semibold text-white">Transaction History</h3>
           </div>
-          <div className="overflow-x-auto max-h-96">
+          <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="sticky top-0 bg-dark-500 z-10">
+              <TableHeader className="bg-dark-500 z-10">
                 <TableRow className="border-white/5 hover:bg-transparent">
                   <TableHead className="text-gray-400">Date</TableHead>
                   <TableHead className="text-gray-400">Type</TableHead>
@@ -209,30 +252,79 @@ const PortfolioPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {history.map((tx) => (
+                {history.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage).map((tx) => (
                   <TableRow key={tx.id} className="border-white/5 hover:bg-white/[0.02]">
-                    <TableCell className="text-gray-400 text-sm">
-                      {new Date(tx.date).toLocaleString()}
+                    <TableCell className="text-gray-400 text-sm whitespace-nowrap">
+                      {new Date(tx.date).toLocaleString(undefined, {
+                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                      })}
                     </TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded text-xs font-semibold ${tx.type === 'buy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                        }`}>
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${tx.type === 'buy' ? theme.colors.buyTx : theme.colors.sellTx}`}>
                         {tx.type.toUpperCase()}
                       </span>
                     </TableCell>
-                    <TableCell className="font-medium text-white">
+                    <TableCell className="font-medium text-white whitespace-nowrap">
                       {tx.name} <span className="text-gray-500 text-xs ml-1 uppercase">{tx.symbol}</span>
                     </TableCell>
                     <TableCell className="text-right text-gray-300">
                       {tx.amount} <span className="text-xs text-gray-500 uppercase">{tx.symbol}</span>
                     </TableCell>
                     <TableCell className="text-right text-gray-300">{formatCurrency(tx.price)}</TableCell>
-                    <TableCell className="text-right font-medium text-white">{formatCurrency(tx.total)}</TableCell>
+                    <TableCell className={`text-right font-medium ${tx.type === 'buy' ? theme.colors.trendUp : theme.colors.trendDown}`}>
+                      {tx.type === 'buy' ? '-' : '+'}{formatCurrency(tx.total)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
+
+          {history.length > rowsPerPage && (
+            <div className="p-4 border-t border-white/5 flex items-center justify-center bg-dark-400/10">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(Math.max(1, currentPage - 1));
+                      }}
+                      className={currentPage === 1 ? theme.colors.paginationDisabled : theme.colors.paginationControl}
+                    />
+                  </PaginationItem>
+
+                  {Array.from({ length: Math.ceil(history.length / rowsPerPage) }).map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(i + 1);
+                        }}
+                        isActive={currentPage === i + 1}
+                        className={currentPage === i + 1 ? theme.colors.paginationActive : theme.colors.paginationInactive}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(Math.min(Math.ceil(history.length / rowsPerPage), currentPage + 1));
+                      }}
+                      className={currentPage === Math.ceil(history.length / rowsPerPage) ? theme.colors.paginationDisabled : theme.colors.paginationControl}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
       )}
     </main>
