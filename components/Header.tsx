@@ -49,7 +49,7 @@ const Header = () => {
 	}, [isMobileMenuOpen]);
 
 	return (
-		<header>
+		<header className="sticky top-0 z-40 w-full bg-dark-700/80 backdrop-blur-md border-b border-dark-400 h-20">
 			<div className="main-container inner relative flex justify-between items-center h-full">
 				<Link href="/" className="z-50 relative">
 					<Image src="/logo.svg" alt="CryptoStream logo" width={180} height={54} />
