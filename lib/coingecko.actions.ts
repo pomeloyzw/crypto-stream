@@ -50,7 +50,7 @@ export interface CoinGeckoTicker {
   trade_url: string | null;
   token_info_url: string | null;
   coin_id: string;
-  target_coin_id: string;
+  target_coin_id?: string | null;
 }
 
 export interface CoinGeckoTickersResponse {

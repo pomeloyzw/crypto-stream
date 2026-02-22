@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/pagination";
 import Link from 'next/link';
 import { ArrowUpRight, ArrowDownRight, RefreshCw, Trash2, Wallet } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { theme } from '@/lib/theme';
 
 const PortfolioPage = () => {
@@ -43,6 +43,8 @@ const PortfolioPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
+  const holdingsKey = useMemo(() => holdings.map(h => h.coinId).sort().join(','), [holdings]);
+
   useEffect(() => {
     const fetchPrices = async () => {
       if (holdings.length === 0) return;
@@ -50,7 +52,7 @@ const PortfolioPage = () => {
       setPricesError(null);
       try {
         const ids = holdings.map((h) => h.coinId).join(',');
-        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`);
+        const res = await fetch(`/api/prices?ids=${ids}`);
 
         if (!res.ok) {
           const errorText = await res.text();
@@ -80,7 +82,7 @@ const PortfolioPage = () => {
     // Refresh prices every 30 seconds
     const interval = setInterval(fetchPrices, 30000);
     return () => clearInterval(interval);
-  }, [holdings]);
+  }, [holdingsKey]);
 
   // Reset pagination if history shrinks below current page
   useEffect(() => {

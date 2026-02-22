@@ -25,7 +25,7 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
   const holding = holdings.find((h) => h.coinId === coinId);
   const holdingAmount = holding ? holding.amount : 0;
 
-  const handleTrade = () => {
+  const handleTrade = async () => {
     setError('');
     setSuccess('');
     const parsedAmount = parseFloat(amount);
@@ -49,10 +49,10 @@ const TradeCard = ({ coinId, symbol, name, currentPrice }: TradeCardProps) => {
 
     try {
       if (tab === 'buy') {
-        buyCoin(coinId, symbol, name, parsedAmount, currentPrice);
+        await buyCoin(coinId, symbol, name, parsedAmount, currentPrice);
         setSuccess(`Successfully bought ${parsedAmount} ${symbol.toUpperCase()}`);
       } else {
-        sellCoin(coinId, symbol, name, parsedAmount, currentPrice);
+        await sellCoin(coinId, symbol, name, parsedAmount, currentPrice);
         setSuccess(`Successfully sold ${parsedAmount} ${symbol.toUpperCase()}`);
       }
       setAmount('');

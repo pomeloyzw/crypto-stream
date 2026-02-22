@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Menu, X } from 'lucide-react'
 
 const Header = () => {
@@ -20,6 +20,10 @@ const Header = () => {
 	}, []);
 
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const mobileMenuId = "mobile-menu-overlay";
+	const firstOverlayLinkRef = useRef<HTMLButtonElement>(null);
+	const toggleButtonRef = useRef<HTMLButtonElement>(null);
+	const wasOpen = useRef(isMobileMenuOpen);
 
 	// Close mobile menu when route changes
 	useEffect(() => {
@@ -27,13 +31,18 @@ const Header = () => {
 		setIsMobileMenuOpen(false);
 	}, [pathname]);
 
-	// Prevent scrolling when mobile menu is open
+	// Prevent scrolling and manage focus when mobile menu is open
 	useEffect(() => {
 		if (isMobileMenuOpen) {
 			document.body.style.overflow = 'hidden';
+			setTimeout(() => firstOverlayLinkRef.current?.focus(), 0);
 		} else {
 			document.body.style.overflow = 'unset';
+			if (wasOpen.current) {
+				toggleButtonRef.current?.focus();
+			}
 		}
+		wasOpen.current = isMobileMenuOpen;
 		return () => {
 			document.body.style.overflow = 'unset';
 		};
@@ -73,18 +82,26 @@ const Header = () => {
 
 				{/* Mobile Menu Toggle Button */}
 				<button
+					ref={toggleButtonRef}
 					className="md:hidden z-50 p-2 text-purple-100 hover:text-white transition-colors relative"
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
 					aria-label="Toggle mobile menu"
 					aria-expanded={isMobileMenuOpen}
+					aria-controls={mobileMenuId}
 				>
 					{isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
 				</button>
 
 				{/* Mobile Navigation Overlay */}
 				{isMobileMenuOpen && (
-					<div className="md:hidden fixed inset-0 z-40 bg-dark-700/95 backdrop-blur-md pt-24 px-6 pb-6 flex flex-col gap-6 h-[100dvh]">
+					<div
+						id={mobileMenuId}
+						role="dialog"
+						aria-modal="true"
+						className="md:hidden fixed inset-0 z-40 bg-dark-700/95 backdrop-blur-md pt-24 px-6 pb-6 flex flex-col gap-6 h-[100dvh]"
+					>
 						<button
+							ref={firstOverlayLinkRef}
 							onClick={() => {
 								setIsMobileMenuOpen(false);
 								document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
