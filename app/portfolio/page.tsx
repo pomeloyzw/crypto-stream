@@ -82,6 +82,14 @@ const PortfolioPage = () => {
     return () => clearInterval(interval);
   }, [holdings]);
 
+  // Reset pagination if history shrinks below current page
+  useEffect(() => {
+    const maxPage = Math.max(1, Math.ceil(history.length / rowsPerPage));
+    if (currentPage > maxPage) {
+      setCurrentPage(maxPage);
+    }
+  }, [history.length, currentPage, rowsPerPage]);
+
   if (!isLoaded) {
     return (
       <main className="container mx-auto px-4 py-8">
