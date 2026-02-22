@@ -21,8 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         buy: "bg-green-600 hover:bg-green-700 text-white cursor-pointer",
         sell: "bg-red-600 hover:bg-red-700 text-white cursor-pointer",
-        danger: "flex items-center gap-2 cursor-pointer border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors bg-transparent",
-        primary: "cursor-pointer bg-purple-600 hover:bg-purple-700 text-white",
+        danger: "cursor-pointer border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors bg-transparent",
         action: "border border-white/10 hover:bg-white/10 cursor-pointer text-foreground bg-transparent",
       },
       size: {
