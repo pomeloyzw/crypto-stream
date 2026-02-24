@@ -9,7 +9,7 @@ const CoinOverview = async () => {
 
   const [coinResult, ohlcResult] = await Promise.allSettled([
     coingeckoFetcher<CoinDetailsData>("/coins/bitcoin", {
-        dex_pair_format: 'symbol',
+      dex_pair_format: 'symbol',
     }),
     coingeckoFetcher<OHLCData[]>("/coins/bitcoin/ohlc", {
       vs_currency: "usd",
@@ -25,6 +25,22 @@ const CoinOverview = async () => {
 
   if (ohlcResult.status === "fulfilled") {
     coinOHLC = ohlcResult.value
+    // Sync the last candle close price with the live price so they match
+    if (coinOHLC && coinOHLC.length > 0 && coinResult.status === "fulfilled" && coinResult.value) {
+      const currentPrice = coinResult.value.market_data.current_price.usd
+      if (typeof currentPrice === "number" && Number.isFinite(currentPrice)) {
+        coinOHLC = [
+          ...coinOHLC.slice(0, -1),
+          [
+            coinOHLC[coinOHLC.length - 1][0],
+            coinOHLC[coinOHLC.length - 1][1],
+            Math.max(coinOHLC[coinOHLC.length - 1][2], currentPrice),
+            Math.min(coinOHLC[coinOHLC.length - 1][3], currentPrice),
+            currentPrice,
+          ] as OHLCData
+        ]
+      }
+    }
   } else {
     console.error("Error fetching OHLC data:", ohlcResult.reason)
     coinOHLC = []

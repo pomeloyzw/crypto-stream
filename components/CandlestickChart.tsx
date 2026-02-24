@@ -228,7 +228,7 @@ const CandlestickChart = ({
           ))}
         </div>
 
-        {klineInterval && (
+        {klineInterval && binanceSymbol && (
           <div className="button-group">
             <span className="text-sm mx-2 font-medium text-purple-100/50">Interval:</span>
             {KLINE_INTERVAL_BUTTONS.map(({ label, value }) => (

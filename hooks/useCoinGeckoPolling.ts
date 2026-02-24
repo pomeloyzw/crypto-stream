@@ -55,6 +55,8 @@ export const useCoinGeckoPolling = ({
 
         if (!isMounted) return;
 
+        let currentPrice = 0;
+
         if (tickerData && tickerData.tickers && tickerData.tickers.length > 0) {
           const validTickers = tickerData.tickers.filter(
             (t) => t.target === "USD" || t.target === "USDT" || t.target === "USDC"
@@ -62,6 +64,9 @@ export const useCoinGeckoPolling = ({
           const bestTicker = validTickers.length > 0 ? validTickers[0] : tickerData.tickers[0];
           
           const p = bestTicker.last;
+          if (validTickers.length > 0) {
+             currentPrice = p;
+          }
           const v = bestTicker.volume;
 
           if (!isNaN(p)) {
@@ -91,7 +96,12 @@ export const useCoinGeckoPolling = ({
         }
 
         if (ohlcData && ohlcData.length > 0) {
-          const lastCandle = ohlcData[ohlcData.length - 1];
+          const lastCandle = [...ohlcData[ohlcData.length - 1]] as OHLCData;
+          if (currentPrice > 0) {
+            lastCandle[4] = currentPrice;
+            if (currentPrice > lastCandle[2]) lastCandle[2] = currentPrice;
+            if (currentPrice < lastCandle[3]) lastCandle[3] = currentPrice;
+          }
           setOhlcv(lastCandle);
         }
 
