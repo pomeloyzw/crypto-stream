@@ -64,7 +64,9 @@ export const useCoinGeckoPolling = ({
           const bestTicker = validTickers.length > 0 ? validTickers[0] : tickerData.tickers[0];
           
           const p = bestTicker.last;
-          currentPrice = p;
+          if (validTickers.length > 0) {
+             currentPrice = p;
+          }
           const v = bestTicker.volume;
 
           if (!isNaN(p)) {
